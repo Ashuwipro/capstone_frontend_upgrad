@@ -31,7 +31,7 @@ class Login extends Component {
   constructor() {
     super();
     this.state = {
-      // modalIsOpen: false,
+      modalIsOpen: false,
       // value: 0,
       isSuccessLogin: "dispNone",
       // isSuccessRegister: "dispNone",
@@ -75,62 +75,41 @@ class Login extends Component {
       validateUsername(this.state.username) &&
       this.state.loginPassword !== ""
     ) {
-      // let dataLogin = null;
-      // let xhrLogin = new XMLHttpRequest();
-      // let that = this;
-      // xhrLogin.addEventListener("readystatechange", function () {
-      //   if (
-      //     this.readyState === 4 &&
-      //     JSON.parse(this.responseText).id !== undefined
-      //   ) {
-      //     sessionStorage.setItem("uuid", JSON.parse(this.responseText).id);
-      //     sessionStorage.setItem(
-      //       "access-token",
-      //       xhrLogin.getResponseHeader("access-token")
-      //     );
-
-      //     that.setState({
-      //       loggedIn: true,
-      //       isSuccessLogin: "dispBlock",
-      //       isFailedLogin: "dispNone",
-      //     });
-
-      //     that.closeModalHandler();
-      //   } else {
-      //     that.setState({
-      //       loggedIn: false,
-      //       isSuccessLogin: "dispNone",
-      //       isFailedLogin: "dispBlock",
-      //     });
-      //   }
-      // });
-
-      // xhrLogin.open("POST", this.props.baseUrl + "auth/login");
-      // xhrLogin.setRequestHeader(
-      //   "Authorization",
-      //   "Basic " +
-      //     window.btoa(this.state.username + ":" + this.state.loginPassword)
-      // );
-      // xhrLogin.setRequestHeader("Content-Type", "application/json");
-      // xhrLogin.setRequestHeader("Cache-Control", "no-cache");
-      // xhrLogin.send(dataLogin);
-
-      let dataSignup = {
-        emailId: this.state.username,
-        password: this.state.loginPassword,
-      };
-
-      const requestOptions = {
+      const options = {
         method: "POST",
         headers: {
           Authorization:
-            "Basic" +
+            "Basic " +
             btoa(`${this.state.username}:${this.state.loginPassword}`),
+          "Content-Type": "application/json",
         },
       };
-      fetch("http://localhost:8080/auth/login", requestOptions)
+      fetch("http://localhost:8080/auth/login", options)
         .then((response) => response.json())
-        .then((data) => console.log("Data=", data));
+        .then((data) => {
+          console.log(data);
+          console.log("Data.id=", data.id);
+          console.log("Data acces token=", data.accessToken);
+          if (data !== null) {
+            //set access-token when logged in successfully
+            sessionStorage.setItem("uuid", data.id);
+            sessionStorage.setItem("access-token", data.accessToken);
+
+            this.setState({
+              // loggedIn: true,
+              isSuccessLogin: "dispBlock",
+              isFailedLogin: "dispNone",
+            });
+
+            this.props.closeModal();
+          } else {
+            this.setState({
+              // loggedIn: false,
+              isSuccessLogin: "dispNone",
+              isFailedLogin: "dispBlock",
+            });
+          }
+        });
     }
   };
 

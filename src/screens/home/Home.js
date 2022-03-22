@@ -22,9 +22,15 @@ class Home extends Component {
     super();
     this.state = {
       value: 0,
-      loggedIn: true,
+      loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
     };
   }
+
+  loggedInStateChange = () => {
+    this.setState({
+      loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
+    });
+  };
 
   tabChangeHandler = (event, value) => {
     this.setState({ value });
@@ -33,7 +39,10 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Header baseUrl={this.props.baseUrl} />
+        <Header
+          baseUrl={this.props.baseUrl}
+          stateChange={this.loggedInStateChange}
+        />
         <Tabs
           className="tabs"
           value={this.state.value}

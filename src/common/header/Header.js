@@ -79,7 +79,7 @@ class Header extends Component {
       contactValid: "dispNone",
       contact: "",
       registrationSuccess: false,
-      loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
+      loggedIn: sessionStorage.getItem("access-token") === null ? false : true,
     };
   }
 
@@ -114,7 +114,8 @@ class Header extends Component {
   };
 
   closeModalHandler = () => {
-    this.setState({ modalIsOpen: false });
+    this.setState({ modalIsOpen: false, loggedIn: true });
+    this.props.stateChange();
   };
 
   tabChangeHandler = (event, value) => {
@@ -297,12 +298,22 @@ class Header extends Component {
   // };
 
   logoutHandler = (e) => {
+    const options = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("access-token"),
+      },
+    };
+
+    fetch("http://localhost:8080/auth/logout", options);
     sessionStorage.removeItem("uuid");
     sessionStorage.removeItem("access-token");
 
     this.setState({
       loggedIn: false,
     });
+
+    this.props.stateChange();
   };
 
   render() {
@@ -350,7 +361,12 @@ class Header extends Component {
             <Tab label="Register" />
           </Tabs>
 
-          {this.state.value === 0 && <Login baseUrl={this.props.baseUrl} />}
+          {this.state.value === 0 && (
+            <Login
+              baseUrl={this.props.baseUrl}
+              closeModal={this.closeModalHandler}
+            />
+          )}
 
           {this.state.value === 1 && <Register baseUrl={this.props.baseUrl} />}
         </Modal>

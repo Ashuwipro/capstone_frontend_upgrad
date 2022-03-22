@@ -73,16 +73,20 @@ class BookAppointment extends Component {
           <FormControl>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
-                label="Date Picker"
+                label="Date Picker Inline"
                 value={this.state.selectedDate}
                 onChange={(date) => this.handleDateChange(date)}
                 format="MM/dd/yyyy"
+                minDate={new Date()}
               />
             </MuiPickersUtilsProvider>
           </FormControl>
           <br />
           <br />
           <FormControl variant="standard">
+            <InputLabel variant="standard" htmlFor="uncontrolled-native">
+              Timeslot
+            </InputLabel>
             <Select
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"

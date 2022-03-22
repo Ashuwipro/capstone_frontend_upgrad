@@ -112,7 +112,21 @@ class Register extends Component {
       };
       fetch("http://localhost:8080/users/register", requestOptions)
         .then((response) => response.json())
-        .then((data) => console.log(data));
+        .then((data) => {
+          if (data !== null) {
+            this.setState({
+              registrationSuccess: true,
+              isSuccessRegister: "dispBlock",
+              isFailedRegister: "dispNone",
+            });
+          } else {
+            this.setState({
+              registrationSuccess: false,
+              isSuccessRegister: "dispNone",
+              isFailedRegister: "dispBlock",
+            });
+          }
+        });
     }
   };
 
