@@ -61,7 +61,7 @@ class Register extends Component {
       contactValid: "dispNone",
       contact: "",
       registrationSuccess: false,
-      // loggedIn: sessionStorage.getItem("access-token") == null ? true : false,
+      // loggedIn: localStorage.getItem("access-token") == null ? true : false,
     };
   }
 

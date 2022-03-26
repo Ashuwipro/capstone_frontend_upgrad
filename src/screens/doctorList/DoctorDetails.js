@@ -46,6 +46,7 @@ class DoctorDetails extends Component {
           <FormControl>
             <h3>Doctor Name: {this.props.dName}</h3>
             <TextField value="ashutosh" disabled={true} type="text" />
+            <p>College: {this.props.dDetails && this.props.dDetails.college}</p>
           </FormControl>
           <br />
           <br />

@@ -40,9 +40,12 @@ class DoctorList extends Component {
       bookAppointmentModalIsOpen: false,
       doctorDetailModalIsOpen: false,
       doctorName: null,
+      doctorId: null,
       selectedSpeciality: "",
       doctorList: null,
       speciality: null,
+      timeSlot: null,
+      doctorDetails: null,
     };
     this.closeBookAppointmentModalHandler =
       this.closeBookAppointmentModalHandler.bind(this);
@@ -67,16 +70,46 @@ class DoctorList extends Component {
     );
   };
 
-  openBookAppointmentModalHandler = (data) => {
-    this.setState({ bookAppointmentModalIsOpen: true, doctorName: data });
+  openBookAppointmentModalHandler = (data1, data2) => {
+    this.setState(
+      {
+        bookAppointmentModalIsOpen: true,
+        doctorName: data1,
+        doctorId: data2,
+      },
+      () => {
+        var date = new Date().toISOString().slice(0, 10);
+        fetch(
+          `http://localhost:8080/doctors/${this.state.doctorId}/timeSlots?date=${date}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            this.setState({ timeSlot: data.timeSlot });
+          });
+      }
+    );
   };
 
   closeBookAppointmentModalHandler = () => {
     this.setState({ bookAppointmentModalIsOpen: false });
   };
 
-  openDoctorDetailModalHandler = (data) => {
-    this.setState({ doctorDetailModalIsOpen: true, doctorName: data });
+  openDoctorDetailModalHandler = (data1, data2) => {
+    this.setState(
+      {
+        doctorDetailModalIsOpen: true,
+        doctorName: data1,
+        doctorId: data2,
+      },
+      () => {
+        fetch(`http://localhost:8080/doctors/${this.state.doctorId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            this.setState({ doctorDetails: data });
+            // console.log("Doctor Details=", data);
+          });
+      }
+    );
   };
 
   closeDoctorDetailModalHandler = () => {
@@ -98,7 +131,6 @@ class DoctorList extends Component {
                 margin: "auto",
               }}
             >
-              {/* <Select options={Countries} /> */}
               <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
                 <Select
                   labelId="demo-simple-select-filled-label"
@@ -107,12 +139,6 @@ class DoctorList extends Component {
                   onChange={this.handleChange}
                   style={{ width: "300px" }}
                 >
-                  {/* <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem> */}
                   <MenuItem value="none">
                     <em style={{ opacity: "0" }}>None</em>
                   </MenuItem>
@@ -124,74 +150,6 @@ class DoctorList extends Component {
               </FormControl>
             </div>
 
-            {/* {this.state.doctorList &&
-              this.state.doctorList.map((i) => {
-                return (
-                  <div>
-                    <div className="col-md-4" style={{ marginTop: "10px" }}>
-                      <Paper
-                        elevation={3}
-                        style={{ width: "40%", margin: "auto" }}
-                      >
-                        <div
-                          style={{
-                            textAlign: "left",
-                            marginLeft: "10px",
-                            paddingTop: "1px",
-                          }}
-                        >
-                          <h3 style={{ marginTop: "10px" }}>
-                            Doctor Name : {i.firstName}
-                          </h3>
-
-                          <div>Speciality : {i.speciality}</div>
-                          <div>
-                            Rating :{" "}
-                            <Rating name="read-only" value="5" readOnly />
-                          </div>
-                        </div>
-                        <Stack
-                          spacing={2}
-                          direction="row"
-                          style={{
-                            marginLeft: "20px",
-                            marginTop: "10px",
-                            paddingBottom: "10px",
-                          }}
-                        >
-                          <Button
-                            style={{
-                              backgroundColor: "blue",
-                              color: "white",
-                              width: "40%",
-                            }}
-                            variant="contained"
-                            onClick={() =>
-                              this.openBookAppointmentModalHandler(i.firstName)
-                            }
-                          >
-                            BOOK APPOINTMENT
-                          </Button>
-                          <Button
-                            style={{
-                              backgroundColor: "green",
-                              color: "white",
-                              width: "40%",
-                            }}
-                            variant="contained"
-                            onClick={() =>
-                              this.openDoctorDetailModalHandler(i.firstName)
-                            }
-                          >
-                            VIEW DETAILS
-                          </Button>
-                        </Stack>
-                      </Paper>
-                    </div>
-                  </div>
-                );
-              })} */}
-
             {this.state.doctorList &&
               this.state.doctorList
                 .filter(
@@ -199,7 +157,7 @@ class DoctorList extends Component {
                 )
                 .map((i) => {
                   return (
-                    <div>
+                    <div key={i.doctorId}>
                       <div className="col-md-4" style={{ marginTop: "10px" }}>
                         <Paper
                           elevation={3}
@@ -240,7 +198,8 @@ class DoctorList extends Component {
                               variant="contained"
                               onClick={() =>
                                 this.openBookAppointmentModalHandler(
-                                  i.firstName
+                                  i.firstName,
+                                  i.id
                                 )
                               }
                             >
@@ -274,7 +233,7 @@ class DoctorList extends Component {
                 )
                 .map((i) => {
                   return (
-                    <div>
+                    <div key={i.doctorId}>
                       <div className="col-md-4" style={{ marginTop: "10px" }}>
                         <Paper
                           elevation={3}
@@ -315,7 +274,8 @@ class DoctorList extends Component {
                               variant="contained"
                               onClick={() =>
                                 this.openBookAppointmentModalHandler(
-                                  i.firstName
+                                  i.firstName,
+                                  i.id
                                 )
                               }
                             >
@@ -329,7 +289,10 @@ class DoctorList extends Component {
                               }}
                               variant="contained"
                               onClick={() =>
-                                this.openDoctorDetailModalHandler(i.firstName)
+                                this.openDoctorDetailModalHandler(
+                                  i.firstName,
+                                  i.id
+                                )
                               }
                             >
                               VIEW DETAILS
@@ -345,11 +308,14 @@ class DoctorList extends Component {
             isOpen={this.state.bookAppointmentModalIsOpen}
             handleClose={this.closeBookAppointmentModalHandler}
             dName={this.state.doctorName}
+            dId={this.state.doctorId}
+            timeslot={this.state.timeSlot}
           />
           <DoctorDetails
             isOpen={this.state.doctorDetailModalIsOpen}
             handleClose={this.closeDoctorDetailModalHandler}
             dName={this.state.doctorName}
+            dDetails={this.state.doctorDetails}
           />
         </div>
       </TabContainer>

@@ -55,7 +55,11 @@ class Login extends Component {
       // contactValid: "dispNone",
       // contact: "",
       // registrationSuccess: false,
-      loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
+      loggedIn:
+        localStorage.getItem("access-token") === null ||
+        localStorage.getItem("access-token") === undefined
+          ? false
+          : true,
     };
   }
 
@@ -92,11 +96,15 @@ class Login extends Component {
           console.log("Data acces token=", data.accessToken);
           if (data !== null) {
             //set access-token when logged in successfully
-            sessionStorage.setItem("uuid", data.id);
-            sessionStorage.setItem("access-token", data.accessToken);
+            localStorage.setItem("uuid", data.id);
+            localStorage.setItem("access-token", data.accessToken);
 
             this.setState({
-              // loggedIn: true,
+              loggedIn:
+                localStorage.getItem("access-token") === null ||
+                localStorage.getItem("access-token") === undefined
+                  ? false
+                  : true,
               isSuccessLogin: "dispBlock",
               isFailedLogin: "dispNone",
             });
@@ -104,7 +112,11 @@ class Login extends Component {
             this.props.closeModal();
           } else {
             this.setState({
-              // loggedIn: false,
+              loggedIn:
+                localStorage.getItem("access-token") === null ||
+                localStorage.getItem("access-token") === undefined
+                  ? false
+                  : true,
               isSuccessLogin: "dispNone",
               isFailedLogin: "dispBlock",
             });
@@ -163,6 +175,10 @@ class Login extends Component {
         {this.state.loggedIn === true && (
           <FormControl>
             <span className={this.state.isSuccessLogin}>Login Successful!</span>
+          </FormControl>
+        )}
+        {this.state.loggedIn === false && (
+          <FormControl>
             <span className={this.state.isFailedLogin}>Login Failed!</span>
           </FormControl>
         )}

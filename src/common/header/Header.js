@@ -79,7 +79,11 @@ class Header extends Component {
       contactValid: "dispNone",
       contact: "",
       registrationSuccess: false,
-      loggedIn: sessionStorage.getItem("access-token") === null ? false : true,
+      loggedIn:
+        localStorage.getItem("access-token") === null ||
+        localStorage.getItem("access-token") === undefined
+          ? false
+          : true,
     };
   }
 
@@ -114,7 +118,14 @@ class Header extends Component {
   };
 
   closeModalHandler = () => {
-    this.setState({ modalIsOpen: false, loggedIn: true });
+    this.setState({
+      modalIsOpen: false,
+      loggedIn:
+        localStorage.getItem("access-token") === null ||
+        localStorage.getItem("access-token") === undefined
+          ? false
+          : true,
+    });
     this.props.stateChange();
   };
 
@@ -152,8 +163,8 @@ class Header extends Component {
   //         this.readyState === 4 &&
   //         JSON.parse(this.responseText).id !== undefined
   //       ) {
-  //         sessionStorage.setItem("uuid", JSON.parse(this.responseText).id);
-  //         sessionStorage.setItem(
+  //         localStorage.setItem("uuid", JSON.parse(this.responseText).id);
+  //         localStorage.setItem(
   //           "access-token",
   //           xhrLogin.getResponseHeader("access-token")
   //         );
@@ -301,13 +312,13 @@ class Header extends Component {
     const options = {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("access-token"),
+        Authorization: "Basic " + localStorage.getItem("access-token"),
       },
     };
 
     fetch("http://localhost:8080/auth/logout", options);
-    sessionStorage.removeItem("uuid");
-    sessionStorage.removeItem("access-token");
+    localStorage.removeItem("uuid");
+    localStorage.removeItem("access-token");
 
     this.setState({
       loggedIn: false,

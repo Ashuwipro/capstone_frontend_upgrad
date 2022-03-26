@@ -22,14 +22,44 @@ class Home extends Component {
     super();
     this.state = {
       value: 0,
-      loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
+      loggedIn:
+        localStorage.getItem("access-token") === null ||
+        localStorage.getItem("access-token") === undefined
+          ? false
+          : true,
+      appointmentList: null,
     };
   }
 
   loggedInStateChange = () => {
-    this.setState({
-      loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
-    });
+    this.setState(
+      {
+        loggedIn:
+          localStorage.getItem("access-token") === null ||
+          localStorage.getItem("access-token") === undefined
+            ? false
+            : true,
+      },
+      () => {
+        if (this.state.loggedIn) {
+          const opt = {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("access-token"),
+              "Content-Type": "application/json",
+            },
+          };
+          fetch(
+            `http://localhost:8080/users/${localStorage.getItem(
+              "uuid"
+            )}/appointments`,
+            opt
+          )
+            .then((response) => response.json())
+            .then((data) => this.setState({ appointmentList: data }));
+        }
+      }
+    );
   };
 
   tabChangeHandler = (event, value) => {
@@ -62,7 +92,7 @@ class Home extends Component {
           </TabContainer>
         )}
         {this.state.value === 1 && this.state.loggedIn === true && (
-          <Appointment />
+          <Appointment list={this.state.appointmentList} />
         )}
       </div>
     );

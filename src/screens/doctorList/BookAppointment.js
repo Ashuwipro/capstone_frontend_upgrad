@@ -24,7 +24,7 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     width: "600px",
-    height: "520px",
+    height: "560px",
     padding: "0%",
     transform: "translate(-50%, -50%)",
   },
@@ -43,16 +43,145 @@ class BookAppointment extends Component {
     super();
     this.state = {
       selectedDate: new Date(),
-      age: "",
+      selectedTimeSlot: "",
+      timeSlot: null,
+      priorMedicalHistory: null,
+      symptoms: null,
+      isValidTimeSlot: "dispNone",
     };
   }
 
+  priorMedicalHistoryChangeHandler = (e) => {
+    this.setState({
+      priorMedicalHistory: e.target.value,
+    });
+  };
+
+  symptomsChangeHandler = (e) => {
+    this.setState({
+      symptoms: e.target.value,
+    });
+  };
+
+  // async bookApp(options) {
+  //   const bookAppointment = {
+  //     method: "POST",
+  //     headers: {
+  //       Authorization: "Bearer " + localStorage.getItem("access-token"),
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(options),
+  //   };
+
+  //   const response = await fetch(
+  //     "http://localhost:8080/appointments/",
+  //     bookAppointment
+  //   );
+  //   const data = await response.json();
+  //   console.log(data);
+  //   // .then((response) => response.json())
+  //   //   .then((data) => console.log("booked appointment data=", data === null));
+  // }
+
+  bookAppointmentClickHandler = () => {
+    this.state.selectedTimeSlot === "" || this.state.selectedTimeSlot === "none"
+      ? this.setState({ isValidTimeSlot: "dispBlock" })
+      : this.setState({ isValidTimeSlot: "dispNone" });
+
+    if (
+      this.state.selectedTimeSlot !== "" ||
+      this.state.selectedTimeSlot !== "none"
+    ) {
+      const opt = {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("access-token"),
+        },
+      };
+
+      fetch(`http://localhost:8080/users/${localStorage.getItem("uuid")}`, opt)
+        .then((response) => response.json())
+        .then((data) => {
+          const options = {
+            doctorId: this.props.dId,
+            doctorName: this.props.dName,
+            userId: localStorage.getItem("uuid"),
+            userName: data.firstName + " " + data.lastName,
+            userEmailId: localStorage.getItem("uuid"),
+            timeSlot: this.state.selectedTimeSlot,
+            appointmentDate: this.state.selectedDate,
+            symptoms: this.state.symptoms,
+            priorMedicalHistory: this.state.priorMedicalHistory,
+          };
+
+          console.log(options);
+
+          const bookAppointment = {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("access-token"),
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(options),
+          };
+
+          fetch("http://localhost:8080/appointments/", bookAppointment)
+            .then((response) => response.json())
+            .then((data) =>
+              console.log("booked appointment data=", data === null)
+            );
+
+          // bookApp(options);
+        });
+    }
+  };
+
+  // async bookApp(options) {
+  //   const bookAppointment = {
+  //     method: "POST",
+  //     headers: {
+  //       Authorization: "Bearer " + localStorage.getItem("access-token"),
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(options),
+  //   };
+
+  //   await fetch("http://localhost:8080/appointments/", bookAppointment)
+  //     .then((response) => response.json())
+  //     .then((data) => console.log("booked appointment data=", data === null));
+  // }
+
   handleChange = (event) => {
-    this.setState({ age: event.target.value });
+    this.setState({
+      selectedTimeSlot: event.target.value,
+      isValidTimeSlot: "dispNone",
+    });
+  };
+
+  bookAppointmentCloseHandler = () => {
+    this.setState({
+      selectedDate: new Date(),
+      selectedTimeSlot: "",
+      timeSlot: null,
+      medicalHistory: null,
+      symptoms: null,
+      isValidTimeSlot: "dispNone",
+    });
+
+    this.props.handleClose();
   };
 
   handleDateChange = (date) => {
-    this.setState({ selectedDate: date });
+    this.setState({ selectedDate: date }, () => {
+      var date = this.state.selectedDate.toISOString().slice(0, 10);
+      fetch(
+        `http://localhost:8080/doctors/${this.props.dId}/timeSlots?date=${date}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState({ timeSlot: data.timeSlot });
+        });
+    });
   };
 
   render() {
@@ -61,13 +190,16 @@ class BookAppointment extends Component {
         ariaHideApp={false}
         isOpen={this.props.isOpen}
         contentLabel="Login"
-        onRequestClose={this.props.handleClose}
+        // onRequestClose={this.props.handleClose}
+        onRequestClose={this.bookAppointmentCloseHandler}
         style={customStyles}
       >
         <div className="modal-head">Book an Appointment</div>
         <div style={{ marginLeft: "10px" }}>
           <FormControl>
-            <h3>Doctor Name: {this.props.dName}</h3>
+            <h3>
+              Doctor Name: {this.props.dName} : {this.props.dId}
+            </h3>
           </FormControl>
           <br />
           <FormControl>
@@ -90,17 +222,27 @@ class BookAppointment extends Component {
             <Select
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"
-              value={this.state.age}
+              value={this.state.selectedTimeSlot}
               onChange={this.handleChange}
               style={{ width: "150px", height: "50px" }}
             >
-              <MenuItem value="">
+              <MenuItem value="none">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {this.state.selectedDate !== new Date() &&
+                this.state.timeSlot &&
+                this.state.timeSlot.map((i) => {
+                  return <MenuItem value={i}>{i}</MenuItem>;
+                })}
+              {this.state.timeSlot === null &&
+                this.props.timeslot !== null &&
+                this.props.timeslot.map((i) => {
+                  return <MenuItem value={i}>{i}</MenuItem>;
+                })}
             </Select>
+            <FormHelperText className={this.state.isValidTimeSlot}>
+              <span className="red">Select a time slot</span>
+            </FormHelperText>
           </FormControl>
           <br />
           <FormControl>
@@ -110,7 +252,8 @@ class BookAppointment extends Component {
               id="medicalHistory"
               label="Medical History"
               type="text"
-              defaultValue=""
+              priorMedicalHistory={this.state.priorMedicalHistory}
+              onChange={this.priorMedicalHistoryChangeHandler}
               variant="standard"
             />
           </FormControl>
@@ -122,7 +265,8 @@ class BookAppointment extends Component {
               id="symptoms"
               label="Symptoms"
               type="text"
-              defaultValue=""
+              symptoms={this.state.symptoms}
+              onChange={this.symptomsChangeHandler}
               variant="standard"
             />
           </FormControl>
@@ -135,6 +279,7 @@ class BookAppointment extends Component {
               width: "15vw",
             }}
             variant="contained"
+            onClick={this.bookAppointmentClickHandler}
           >
             BOOK APPOINTMENT
           </Button>
