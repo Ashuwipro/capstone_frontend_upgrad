@@ -13,6 +13,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 const TabContainer = function (props) {
   return (
     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
@@ -46,6 +52,7 @@ class DoctorList extends Component {
       speciality: null,
       timeSlot: null,
       doctorDetails: null,
+      withoutLoginAppointment: false,
     };
     this.closeBookAppointmentModalHandler =
       this.closeBookAppointmentModalHandler.bind(this);
@@ -60,34 +67,54 @@ class DoctorList extends Component {
     const data1 = await response1.json();
     const data2 = await response2.json();
     this.setState({ doctorList: data1, speciality: data2 });
+  }
 
-    console.log("Doctor=", this.state.doctorList);
+  async fetchingDoctorsWithSpeciality(urlPassed) {
+    const response3 = await fetch(urlPassed);
+    const data3 = await response3.json();
+    this.setState({ doctorList: data3 });
   }
 
   handleChange = (event) => {
-    this.setState({ selectedSpeciality: event.target.value }, () =>
-      console.log("Selected Speciality=", this.state.selectedSpeciality)
-    );
+    this.setState({ selectedSpeciality: event.target.value }, () => {
+      const url3 = `http://localhost:8080/doctors/?speciality=${this.state.selectedSpeciality}`;
+      this.fetchingDoctorsWithSpeciality(url3);
+    });
+  };
+
+  handleWithoutLoginAppointmentClose = () => {
+    this.setState({
+      withoutLoginAppointment: false,
+    });
   };
 
   openBookAppointmentModalHandler = (data1, data2) => {
-    this.setState(
-      {
-        bookAppointmentModalIsOpen: true,
-        doctorName: data1,
-        doctorId: data2,
-      },
-      () => {
-        var date = new Date().toISOString().slice(0, 10);
-        fetch(
-          `http://localhost:8080/doctors/${this.state.doctorId}/timeSlots?date=${date}`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            this.setState({ timeSlot: data.timeSlot });
-          });
-      }
-    );
+    if (
+      localStorage.getItem("access-token") !== null &&
+      localStorage.getItem("access-token") !== undefined
+    ) {
+      this.setState(
+        {
+          bookAppointmentModalIsOpen: true,
+          doctorName: data1,
+          doctorId: data2,
+        },
+        () => {
+          var date = new Date().toISOString().slice(0, 10);
+          fetch(
+            `http://localhost:8080/doctors/${this.state.doctorId}/timeSlots?date=${date}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              this.setState({ timeSlot: data.timeSlot });
+            });
+        }
+      );
+    } else {
+      this.setState({
+        withoutLoginAppointment: true,
+      });
+    }
   };
 
   closeBookAppointmentModalHandler = () => {
@@ -177,7 +204,11 @@ class DoctorList extends Component {
                             <div>Speciality : {i.speciality}</div>
                             <div>
                               Rating :{" "}
-                              <Rating name="read-only" value="5" readOnly />
+                              <Rating
+                                name="read-only"
+                                value={i.rating}
+                                readOnly
+                              />
                             </div>
                           </div>
                           <Stack
@@ -252,8 +283,12 @@ class DoctorList extends Component {
 
                             <div>Speciality : {i.speciality}</div>
                             <div>
-                              Rating :{" "}
-                              <Rating name="read-only" value="5" readOnly />
+                              Rating :
+                              <Rating
+                                name="read-only"
+                                value={i.rating}
+                                readOnly
+                              />
                             </div>
                           </div>
                           <Stack
@@ -304,6 +339,7 @@ class DoctorList extends Component {
                   );
                 })}
           </div>
+
           <BookAppointment
             isOpen={this.state.bookAppointmentModalIsOpen}
             handleClose={this.closeBookAppointmentModalHandler}
@@ -311,6 +347,37 @@ class DoctorList extends Component {
             dId={this.state.doctorId}
             timeslot={this.state.timeSlot}
           />
+
+          <Dialog
+            open={this.state.withoutLoginAppointment}
+            onClose={this.handleWithoutLoginAppointmentClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"localhost:3000"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Please login to book an appointment!
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                style={{
+                  backgroundColor: "blue",
+                  color: "white",
+                  width: "5vw",
+                }}
+                variant="contained"
+                onClick={this.handleWithoutLoginAppointmentClose}
+                autoFocus
+              >
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
+
           <DoctorDetails
             isOpen={this.state.doctorDetailModalIsOpen}
             handleClose={this.closeDoctorDetailModalHandler}

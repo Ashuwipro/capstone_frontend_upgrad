@@ -91,10 +91,10 @@ class Login extends Component {
       fetch("http://localhost:8080/auth/login", options)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-          console.log("Data.id=", data.id);
-          console.log("Data acces token=", data.accessToken);
-          if (data !== null) {
+          if (data.message !== "Username does not exist") {
+            console.log("Data after fake login=", data);
+            console.log("Data.id=", data.id);
+            console.log("Data acces token=", data.accessToken);
             //set access-token when logged in successfully
             localStorage.setItem("uuid", data.id);
             localStorage.setItem("access-token", data.accessToken);
@@ -108,8 +108,9 @@ class Login extends Component {
               isSuccessLogin: "dispBlock",
               isFailedLogin: "dispNone",
             });
-
-            this.props.closeModal();
+            setTimeout(() => {
+              this.props.closeModal();
+            }, 1000);
           } else {
             this.setState({
               loggedIn:

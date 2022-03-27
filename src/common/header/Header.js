@@ -139,180 +139,11 @@ class Header extends Component {
     });
   };
 
-  // loginClickHandler = () => {
-  //   this.state.username === ""
-  //     ? this.setState({ usernameRequired: "dispBlock" })
-  //     : this.setState({ usernameRequired: "dispNone" });
-  //   this.state.loginPassword === ""
-  //     ? this.setState({ loginPasswordRequired: "dispBlock" })
-  //     : this.setState({ loginPasswordRequired: "dispNone" });
-  //   this.state.username !== "" && !validateUsername(this.state.username)
-  //     ? this.setState({ usernameValid: "dispBlock" })
-  //     : this.setState({ usernameValid: "dispNone" });
-
-  //   if (
-  //     this.state.username !== "" &&
-  //     validateUsername(this.state.username) &&
-  //     this.state.loginPassword !== ""
-  //   ) {
-  //     let dataLogin = null;
-  //     let xhrLogin = new XMLHttpRequest();
-  //     let that = this;
-  //     xhrLogin.addEventListener("readystatechange", function () {
-  //       if (
-  //         this.readyState === 4 &&
-  //         JSON.parse(this.responseText).id !== undefined
-  //       ) {
-  //         localStorage.setItem("uuid", JSON.parse(this.responseText).id);
-  //         localStorage.setItem(
-  //           "access-token",
-  //           xhrLogin.getResponseHeader("access-token")
-  //         );
-
-  //         that.setState({
-  //           loggedIn: true,
-  //           isSuccessLogin: "dispBlock",
-  //           isFailedLogin: "dispNone",
-  //         });
-
-  //         that.closeModalHandler();
-  //       } else {
-  //         that.setState({
-  //           loggedIn: false,
-  //           isSuccessLogin: "dispNone",
-  //           isFailedLogin: "dispBlock",
-  //         });
-  //       }
-  //     });
-
-  //     xhrLogin.open("POST", this.props.baseUrl + "auth/login");
-  //     xhrLogin.setRequestHeader(
-  //       "Authorization",
-  //       "Basic " +
-  //         window.btoa(this.state.username + ":" + this.state.loginPassword)
-  //     );
-  //     xhrLogin.setRequestHeader("Content-Type", "application/json");
-  //     xhrLogin.setRequestHeader("Cache-Control", "no-cache");
-  //     xhrLogin.send(dataLogin);
-  //   }
-  // };
-
-  // inputUsernameChangeHandler = (e) => {
-  //   this.setState({
-  //     username: e.target.value,
-  //     usernameRequired: "dispNone",
-  //     usernameValid: "dispNone",
-  //   });
-  // };
-
-  // inputLoginPasswordChangeHandler = (e) => {
-  //   this.setState({
-  //     loginPassword: e.target.value,
-  //     loginPasswordRequired: "dispNone",
-  //   });
-  // };
-
-  // registerClickHandler = () => {
-  //   this.state.firstname === ""
-  //     ? this.setState({ firstnameRequired: "dispBlock" })
-  //     : this.setState({ firstnameRequired: "dispNone" });
-  //   this.state.lastname === ""
-  //     ? this.setState({ lastnameRequired: "dispBlock" })
-  //     : this.setState({ lastnameRequired: "dispNone" });
-  //   this.state.email === ""
-  //     ? this.setState({ emailRequired: "dispBlock" })
-  //     : this.setState({ emailRequired: "dispNone" });
-  //   this.state.email !== "" && !validateUsername(this.state.email)
-  //     ? this.setState({ emailValid: "dispBlock" })
-  //     : this.setState({ emailValid: "dispNone" });
-  //   this.state.registerPassword === ""
-  //     ? this.setState({ registerPasswordRequired: "dispBlock" })
-  //     : this.setState({ registerPasswordRequired: "dispNone" });
-  //   this.state.contact === ""
-  //     ? this.setState({ contactRequired: "dispBlock" })
-  //     : this.setState({ contactRequired: "dispNone" });
-  //   this.state.contact !== "" && !validatePhoneNumber(this.state.contact)
-  //     ? this.setState({ contactValid: "dispBlock" })
-  //     : this.setState({ contactValid: "dispNone" });
-
-  //   if (
-  //     this.state.firstname !== "" &&
-  //     this.state.lastname !== "" &&
-  //     this.state.email !== "" &&
-  //     validateUsername(this.state.email) &&
-  //     this.state.registerPassword !== "" &&
-  //     this.state.contact !== "" &&
-  //     validatePhoneNumber(this.state.contact)
-  //   ) {
-  //     let dataSignup = JSON.stringify({
-  //       email_address: this.state.email,
-  //       first_name: this.state.firstname,
-  //       last_name: this.state.lastname,
-  //       mobile_number: this.state.contact,
-  //       password: this.state.registerPassword,
-  //     });
-
-  //     let xhrSignup = new XMLHttpRequest();
-  //     let that = this;
-  //     xhrSignup.addEventListener("readystatechange", function () {
-  //       if (this.readyState === 4) {
-  //         that.setState({
-  //           registrationSuccess: true,
-  //           isSuccessRegister: "dispBlock",
-  //           isFailedRegister: "dispNone",
-  //         });
-  //       } else {
-  //         that.setState({
-  //           registrationSuccess: false,
-  //           isSuccessRegister: "dispNone",
-  //           isFailedRegister: "dispBlock",
-  //         });
-  //       }
-  //     });
-
-  //     xhrSignup.open("POST", this.props.baseUrl + "signup");
-  //     xhrSignup.setRequestHeader("Content-Type", "application/json");
-  //     xhrSignup.setRequestHeader("Cache-Control", "no-cache");
-  //     xhrSignup.send(dataSignup);
-  //   }
-  // };
-
-  // inputFirstNameChangeHandler = (e) => {
-  //   this.setState({ firstname: e.target.value, firstnameRequired: "dispNone" });
-  // };
-
-  // inputLastNameChangeHandler = (e) => {
-  //   this.setState({ lastname: e.target.value, lastnameRequired: "dispNone" });
-  // };
-
-  // inputEmailChangeHandler = (e) => {
-  //   this.setState({
-  //     email: e.target.value,
-  //     emailRequired: "dispNone",
-  //     emailValid: "dispNone",
-  //   });
-  // };
-
-  // inputRegisterPasswordChangeHandler = (e) => {
-  //   this.setState({
-  //     registerPassword: e.target.value,
-  //     registerPasswordRequired: "dispNone",
-  //   });
-  // };
-
-  // inputContactChangeHandler = (e) => {
-  //   this.setState({
-  //     contact: e.target.value,
-  //     contactRequired: "dispNone",
-  //     contactValid: "dispNone",
-  //   });
-  // };
-
   logoutHandler = (e) => {
     const options = {
       method: "POST",
       headers: {
-        Authorization: "Basic " + localStorage.getItem("access-token"),
+        Authorization: "Bearer " + localStorage.getItem("access-token"),
       },
     };
 
@@ -331,7 +162,7 @@ class Header extends Component {
     return (
       <div>
         <header className="app-header">
-          <img src={logo} className="app-logo" alt="Movies App Logo" />
+          <img src={logo} className="app-logo" alt="BookAppointment App Logo" />
           <p className="app-label">Doctor Finder</p>
           {!this.state.loggedIn ? (
             <div className="login-button">

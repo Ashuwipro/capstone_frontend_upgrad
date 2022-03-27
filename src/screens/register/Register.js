@@ -37,17 +37,8 @@ class Register extends Component {
   constructor() {
     super();
     this.state = {
-      // modalIsOpen: false,
-      // value: 0,
-      // isSuccessLogin: "dispNone",
       isSuccessRegister: "dispNone",
-      // isFailedLogin: "dispNone",
       isFailedRegister: "dispNone",
-      // usernameRequired: "dispNone",
-      // usernameValid: "dispNone",
-      // username: "",
-      // loginPasswordRequired: "dispNone",
-      // loginPassword: "",
       firstnameRequired: "dispNone",
       firstname: "",
       lastnameRequired: "dispNone",
@@ -61,7 +52,6 @@ class Register extends Component {
       contactValid: "dispNone",
       contact: "",
       registrationSuccess: false,
-      // loggedIn: localStorage.getItem("access-token") == null ? true : false,
     };
   }
 

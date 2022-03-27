@@ -146,7 +146,7 @@ class RateAppointment extends Component {
           </FormControl>
           <br />
           <br />
-          <FormControl>
+          <FormControl required>
             <div>
               Rating:
               <Rating
@@ -164,7 +164,7 @@ class RateAppointment extends Component {
               </div>
             </FormHelperText>
             <FormHelperText className={this.state.ratedSuccessfully}>
-              <div className="red">Rated successfully</div>
+              <div className="red">Rated Successfully</div>
             </FormHelperText>
           </FormControl>
           <br />

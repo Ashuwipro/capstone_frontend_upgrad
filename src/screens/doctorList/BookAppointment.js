@@ -4,7 +4,6 @@ import Modal from "react-modal";
 import FormControl from "@mui/material/FormControl";
 import Button from "@material-ui/core/Button";
 import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@mui/material/TextField";
 import {
@@ -14,6 +13,12 @@ import {
 import DateFnsUtils from "@date-io/date-fns";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 //creating custom styles
 const customStyles = {
@@ -30,14 +35,6 @@ const customStyles = {
   },
 };
 
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
-
 class BookAppointment extends Component {
   constructor() {
     super();
@@ -48,40 +45,24 @@ class BookAppointment extends Component {
       priorMedicalHistory: null,
       symptoms: null,
       isValidTimeSlot: "dispNone",
+      bookedAppointment: "dispNone",
+      openSlotUnavailable: false,
     };
   }
 
   priorMedicalHistoryChangeHandler = (e) => {
     this.setState({
       priorMedicalHistory: e.target.value,
+      bookedAppointment: "dispNone",
     });
   };
 
   symptomsChangeHandler = (e) => {
     this.setState({
       symptoms: e.target.value,
+      bookedAppointment: "dispNone",
     });
   };
-
-  // async bookApp(options) {
-  //   const bookAppointment = {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("access-token"),
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(options),
-  //   };
-
-  //   const response = await fetch(
-  //     "http://localhost:8080/appointments/",
-  //     bookAppointment
-  //   );
-  //   const data = await response.json();
-  //   console.log(data);
-  //   // .then((response) => response.json())
-  //   //   .then((data) => console.log("booked appointment data=", data === null));
-  // }
 
   bookAppointmentClickHandler = () => {
     this.state.selectedTimeSlot === "" || this.state.selectedTimeSlot === "none"
@@ -89,7 +70,7 @@ class BookAppointment extends Component {
       : this.setState({ isValidTimeSlot: "dispNone" });
 
     if (
-      this.state.selectedTimeSlot !== "" ||
+      this.state.selectedTimeSlot !== "" &&
       this.state.selectedTimeSlot !== "none"
     ) {
       const opt = {
@@ -114,7 +95,7 @@ class BookAppointment extends Component {
             priorMedicalHistory: this.state.priorMedicalHistory,
           };
 
-          console.log(options);
+          console.log("Booking data=", options);
 
           const bookAppointment = {
             method: "POST",
@@ -125,36 +106,35 @@ class BookAppointment extends Component {
             body: JSON.stringify(options),
           };
 
-          fetch("http://localhost:8080/appointments/", bookAppointment)
-            .then((response) => response.json())
-            .then((data) =>
-              console.log("booked appointment data=", data === null)
-            );
-
-          // bookApp(options);
+          fetch("http://localhost:8080/appointments/", bookAppointment).then(
+            (response) => {
+              if (response.status === 400) {
+                this.setState({
+                  openSlotUnavailable: true,
+                  bookedAppointment: "dispNone",
+                });
+              } else {
+                this.setState({
+                  bookedAppointment: "dispBlock",
+                });
+              }
+            }
+          );
         });
     }
   };
-
-  // async bookApp(options) {
-  //   const bookAppointment = {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: "Bearer " + localStorage.getItem("access-token"),
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(options),
-  //   };
-
-  //   await fetch("http://localhost:8080/appointments/", bookAppointment)
-  //     .then((response) => response.json())
-  //     .then((data) => console.log("booked appointment data=", data === null));
-  // }
 
   handleChange = (event) => {
     this.setState({
       selectedTimeSlot: event.target.value,
       isValidTimeSlot: "dispNone",
+      bookedAppointment: "dispNone",
+    });
+  };
+
+  handleSlotUnavailableClose = () => {
+    this.setState({
+      openSlotUnavailable: false,
     });
   };
 
@@ -166,6 +146,7 @@ class BookAppointment extends Component {
       medicalHistory: null,
       symptoms: null,
       isValidTimeSlot: "dispNone",
+      bookedAppointment: "dispNone",
     });
 
     this.props.handleClose();
@@ -190,7 +171,6 @@ class BookAppointment extends Component {
         ariaHideApp={false}
         isOpen={this.props.isOpen}
         contentLabel="Login"
-        // onRequestClose={this.props.handleClose}
         onRequestClose={this.bookAppointmentCloseHandler}
         style={customStyles}
       >
@@ -269,6 +249,9 @@ class BookAppointment extends Component {
               onChange={this.symptomsChangeHandler}
               variant="standard"
             />
+            <FormHelperText className={this.state.bookedAppointment}>
+              <div className="red">Appointment Booked Successfully</div>
+            </FormHelperText>
           </FormControl>
           <br />
           <br />
@@ -283,6 +266,35 @@ class BookAppointment extends Component {
           >
             BOOK APPOINTMENT
           </Button>
+          <Dialog
+            open={this.state.openSlotUnavailable}
+            onClose={this.handleSlotUnavailableClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"localhost:3000"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Either the slot is already booked or not available
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                style={{
+                  backgroundColor: "lightblue",
+                  color: "white",
+                  width: "5vw",
+                }}
+                variant="contained"
+                onClick={this.handleSlotUnavailableClose}
+                autoFocus
+              >
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </Modal>
     );
