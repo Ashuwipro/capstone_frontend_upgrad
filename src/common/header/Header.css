@@ -29,7 +29,7 @@
   height: 70px;
   color: white;
   line-height: 65px;
-  padding-left: 10px;
+  padding: 11px;
 }
 
 .bookshow-button {
@@ -61,11 +61,12 @@
   color: white;
   background-color: black;
   text-align: center;
-  width: 150px;
+  width: 180px;
   height: 30px;
   padding-top: 10px;
   border-radius: 7px;
   margin-left: -10px;
+  margin-top: 5px;
 }
 
 .red {

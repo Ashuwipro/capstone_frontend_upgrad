@@ -1,31 +1,31 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import PropTypes from "prop-types";
+import { fetchUsedInLogin } from "../../util/fetch";
+import TabContainer from "../../common/tabContainer/TabContainer";
 
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
+// const TabContainer = function (props) {
+//   return (
+//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
+//       {props.children}
+//     </Typography>
+//   );
+// };
 
-const validateUsername = (email) => {
-  return String(email)
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-};
+// const validateUsername = (email) => {
+//   return String(email)
+//     .toLowerCase()
+//     .match(
+//       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+//     );
+// };
 
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+// TabContainer.propTypes = {
+//   children: PropTypes.node.isRequired,
+// };
 
 class Login extends Component {
   constructor() {
@@ -39,7 +39,8 @@ class Login extends Component {
       // isFailedRegister: "dispNone",
       usernameRequired: "dispNone",
       usernameValid: "dispNone",
-      username: "",
+      // username: "",
+      username: "test",
       loginPasswordRequired: "dispNone",
       loginPassword: "",
       // firstnameRequired: "dispNone",
@@ -63,66 +64,67 @@ class Login extends Component {
     };
   }
 
-  loginClickHandler = () => {
+  validateUsername = (username) => {
+    return String(username)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  loginClickHandler = async () => {
     this.state.username === ""
       ? this.setState({ usernameRequired: "dispBlock" })
       : this.setState({ usernameRequired: "dispNone" });
     this.state.loginPassword === ""
       ? this.setState({ loginPasswordRequired: "dispBlock" })
       : this.setState({ loginPasswordRequired: "dispNone" });
-    this.state.username !== "" && !validateUsername(this.state.username)
+    this.state.username !== "" && !this.validateUsername(this.state.username)
       ? this.setState({ usernameValid: "dispBlock" })
       : this.setState({ usernameValid: "dispNone" });
 
     if (
       this.state.username !== "" &&
-      validateUsername(this.state.username) &&
+      this.state.username !== undefined &&
+      this.validateUsername(this.state.username) &&
       this.state.loginPassword !== ""
     ) {
-      const options = {
-        method: "POST",
-        headers: {
-          Authorization:
-            "Basic " +
-            btoa(`${this.state.username}:${this.state.loginPassword}`),
-          "Content-Type": "application/json",
-        },
-      };
-      fetch("http://localhost:8080/auth/login", options)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.message !== "Username does not exist") {
-            console.log("Data after fake login=", data);
-            console.log("Data.id=", data.id);
-            console.log("Data acces token=", data.accessToken);
-            //set access-token when logged in successfully
-            localStorage.setItem("uuid", data.id);
-            localStorage.setItem("access-token", data.accessToken);
+      const data = await fetchUsedInLogin(
+        this.state.username,
+        this.state.loginPassword
+      );
+      console.log(data);
+      if (data[1] === 200) {
+        console.log("Data after fake login=", data);
+        console.log("Data.id=", data[0].id);
+        console.log("Data acces token=", data[0].accessToken);
+        //set access-token when logged in successfully
+        localStorage.setItem("uuid", data[0].id);
+        localStorage.setItem("access-token", data[0].accessToken);
 
-            this.setState({
-              loggedIn:
-                localStorage.getItem("access-token") === null ||
-                localStorage.getItem("access-token") === undefined
-                  ? false
-                  : true,
-              isSuccessLogin: "dispBlock",
-              isFailedLogin: "dispNone",
-            });
-            setTimeout(() => {
-              this.props.closeModal();
-            }, 1000);
-          } else {
-            this.setState({
-              loggedIn:
-                localStorage.getItem("access-token") === null ||
-                localStorage.getItem("access-token") === undefined
-                  ? false
-                  : true,
-              isSuccessLogin: "dispNone",
-              isFailedLogin: "dispBlock",
-            });
-          }
+        this.setState({
+          loggedIn:
+            localStorage.getItem("access-token") === null ||
+            localStorage.getItem("access-token") === undefined
+              ? false
+              : true,
+          isSuccessLogin: "dispBlock",
+          isFailedLogin: "dispNone",
         });
+        setTimeout(() => {
+          this.props.closeModal();
+        }, 1000);
+      } else {
+        this.setState({
+          loggedIn:
+            localStorage.getItem("access-token") === null ||
+            localStorage.getItem("access-token") === undefined
+              ? false
+              : true,
+          isSuccessLogin: "dispNone",
+          isFailedLogin: "dispBlock",
+        });
+      }
     }
   };
 
@@ -152,9 +154,9 @@ class Login extends Component {
             username={this.state.username}
             onChange={this.inputUsernameChangeHandler}
           />
-          <FormHelperText className={this.state.usernameRequired}>
-            <div className="empty">Please fill out this field</div>
-          </FormHelperText>
+          <div className={this.state.usernameRequired}>
+            <div className="empty">Please fill out this field.</div>
+          </div>
           <FormHelperText className={this.state.usernameValid}>
             <span className="red">Enter valid Email</span>
           </FormHelperText>
@@ -168,9 +170,9 @@ class Login extends Component {
             loginpassword={this.state.loginPassword}
             onChange={this.inputLoginPasswordChangeHandler}
           />
-          <FormHelperText className={this.state.loginPasswordRequired}>
-            <div className="empty">Please fill out this field</div>
-          </FormHelperText>
+          <div className={this.state.loginPasswordRequired}>
+            <div className="empty">Please fill out this field.</div>
+          </div>
         </FormControl>
         <br />
         {this.state.loggedIn === true && (

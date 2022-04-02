@@ -1,25 +1,20 @@
 import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import Rating from "@material-ui/lab/Rating";
 import Stack from "@mui/material/Stack";
-
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import RateAppointment from "../appointment/RateAppointment";
 
 import Paper from "@mui/material/Paper";
+import TabContainer from "../../common/tabContainer/TabContainer";
 
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
+// const TabContainer = function (props) {
+//   return (
+//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
+//       {props.children}
+//     </Typography>
+//   );
+// };
 
-const n = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+// const n = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 class Appointment extends Component {
   constructor() {
@@ -53,7 +48,12 @@ class Appointment extends Component {
                 <div className="col-md-4" style={{ marginTop: "10px" }}>
                   <Paper
                     elevation={3}
-                    style={{ width: "800px", margin: "auto" }}
+                    style={{
+                      margin: "15px",
+                      textAlign: "left",
+                      padding: "20px",
+                      cursor: "pointer",
+                    }}
                   >
                     <div
                       style={{
@@ -62,14 +62,14 @@ class Appointment extends Component {
                         paddingTop: "1px",
                       }}
                     >
-                      <h3 style={{ marginTop: "10px" }}>
-                        Doctor Name : {i.appointmentId}
-                      </h3>
+                      <p style={{ marginTop: "10px" }}>Dr: {i.doctorName}</p>
 
-                      <div>Speciality : </div>
-                      <div>
+                      <div>Date: {i.appointmentDate}</div>
+                      <div>Symptoms : {i.symptoms}</div>
+                      <div>Prior Medical History : {i.priorMedicalHistory}</div>
+                      {/* <div>
                         Rating : <Rating name="read-only" value="5" readOnly />
-                      </div>
+                      </div> */}
                     </div>
                     <Stack
                       spacing={2}

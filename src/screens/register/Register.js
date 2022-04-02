@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import PropTypes from "prop-types";
+import { fetchUsedInRegister } from "../../util/fetch";
+import TabContainer from "../../common/tabContainer/TabContainer";
 
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
+// const TabContainer = function (props) {
+//   return (
+//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
+//       {props.children}
+//     </Typography>
+//   );
+// };
 
 const validateUsername = (email) => {
   return String(email)
@@ -29,9 +29,9 @@ const validatePhoneNumber = (phone) => {
   );
 };
 
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+// TabContainer.propTypes = {
+//   children: PropTypes.node.isRequired,
+// };
 
 class Register extends Component {
   constructor() {
@@ -55,7 +55,7 @@ class Register extends Component {
     };
   }
 
-  registerClickHandler = () => {
+  registerClickHandler = async () => {
     this.state.firstname === ""
       ? this.setState({ firstnameRequired: "dispBlock" })
       : this.setState({ firstnameRequired: "dispNone" });
@@ -95,28 +95,44 @@ class Register extends Component {
         password: this.state.registerPassword,
       };
 
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataSignup),
-      };
-      fetch("http://localhost:8080/users/register", requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data !== null) {
-            this.setState({
-              registrationSuccess: true,
-              isSuccessRegister: "dispBlock",
-              isFailedRegister: "dispNone",
-            });
-          } else {
-            this.setState({
-              registrationSuccess: false,
-              isSuccessRegister: "dispNone",
-              isFailedRegister: "dispBlock",
-            });
-          }
+      // const requestOptions = {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(dataSignup),
+      // };
+      // fetch("http://localhost:8080/users/register", requestOptions)
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     if (data !== null) {
+      //       this.setState({
+      //         registrationSuccess: true,
+      //         isSuccessRegister: "dispBlock",
+      //         isFailedRegister: "dispNone",
+      //       });
+      //     } else {
+      //       this.setState({
+      //         registrationSuccess: false,
+      //         isSuccessRegister: "dispNone",
+      //         isFailedRegister: "dispBlock",
+      //       });
+      //     }
+      //   });
+
+      const result = await fetchUsedInRegister(dataSignup);
+
+      if (result[0] === 200) {
+        this.setState({
+          registrationSuccess: true,
+          isSuccessRegister: "dispBlock",
+          isFailedRegister: "dispNone",
         });
+      } else {
+        this.setState({
+          registrationSuccess: false,
+          isSuccessRegister: "dispNone",
+          isFailedRegister: "dispBlock",
+        });
+      }
     }
   };
 
@@ -162,9 +178,9 @@ class Register extends Component {
             firstname={this.state.firstname}
             onChange={this.inputFirstNameChangeHandler}
           />
-          <FormHelperText className={this.state.firstnameRequired}>
+          <div className={this.state.firstnameRequired}>
             <div className="empty">Please fill out this field</div>
-          </FormHelperText>
+          </div>
         </FormControl>
         <br />
         <FormControl required>
@@ -175,9 +191,9 @@ class Register extends Component {
             lastname={this.state.lastname}
             onChange={this.inputLastNameChangeHandler}
           />
-          <FormHelperText className={this.state.lastnameRequired}>
+          <div className={this.state.lastnameRequired}>
             <div className="empty">Please fill out this field</div>
-          </FormHelperText>
+          </div>
         </FormControl>
         <br />
         <FormControl required>
@@ -188,9 +204,9 @@ class Register extends Component {
             email={this.state.email}
             onChange={this.inputEmailChangeHandler}
           />
-          <FormHelperText className={this.state.emailRequired}>
+          <div className={this.state.emailRequired}>
             <div className="empty">Please fill out this field</div>
-          </FormHelperText>
+          </div>
           <FormHelperText className={this.state.emailValid}>
             <span className="red">Enter valid Email</span>
           </FormHelperText>
@@ -204,9 +220,9 @@ class Register extends Component {
             registerpassword={this.state.registerPassword}
             onChange={this.inputRegisterPasswordChangeHandler}
           />
-          <FormHelperText className={this.state.registerPasswordRequired}>
+          <div className={this.state.registerPasswordRequired}>
             <div className="empty">Please fill out this field</div>
-          </FormHelperText>
+          </div>
         </FormControl>
         <br />
         <FormControl required>
@@ -217,9 +233,9 @@ class Register extends Component {
             contact={this.state.contact}
             onChange={this.inputContactChangeHandler}
           />
-          <FormHelperText className={this.state.contactRequired}>
+          <div className={this.state.contactRequired}>
             <div className="empty">Please fill out this field</div>
-          </FormHelperText>
+          </div>
           <FormHelperText className={this.state.contactValid}>
             <span className="red">Enter valid mobile number</span>
           </FormHelperText>
@@ -230,11 +246,17 @@ class Register extends Component {
             <span className={this.state.isSuccessRegister}>
               Registration Successful. Please Login!
             </span>
+          </FormControl>
+        )}
+
+        {this.state.registrationSuccess === false && (
+          <FormControl>
             <span className={this.state.isFailedRegister}>
               Registration Failed!
             </span>
           </FormControl>
         )}
+
         <br />
         <Button
           variant="contained"

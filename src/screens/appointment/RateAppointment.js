@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
 import Modal from "react-modal";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "@material-ui/core/Button";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@mui/material/TextField";
 import Rating from "@mui/material/Rating";
+
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
 
 //creating custom styles
 const customStyles = {
@@ -15,20 +18,22 @@ const customStyles = {
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    width: "600px",
-    height: "400px",
+    // width: "800px",
+    // height: "400px",
+    width: "50%",
+    height: "60%",
     padding: "0%",
     transform: "translate(-50%, -50%)",
   },
 };
 
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
+// const TabContainer = function (props) {
+//   return (
+//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
+//       {props.children}
+//     </Typography>
+//   );
+// };
 
 class RateAppointment extends Component {
   constructor() {
@@ -130,57 +135,69 @@ class RateAppointment extends Component {
         onRequestClose={this.rateAppointmentCloseHandler}
         style={customStyles}
       >
-        <div className="modal-head">Rate an Appointment</div>
-        <div style={{ marginLeft: "10px" }}>
-          <FormControl>
-            <TextField
-              multiline={true}
-              rows={3}
-              id="comments"
-              label="Comments"
-              type="text"
-              comments={this.state.comments}
-              onChange={this.commentsChangeHandler}
-              variant="standard"
-            />
-          </FormControl>
-          <br />
-          <br />
-          <FormControl required>
-            <div>
-              Rating:
-              <Rating
-                name="simple-controlled"
-                value={this.state.ratingValue}
-                onChange={this.ratingChangeHandler}
+        <Card style={{ height: "100%" }}>
+          <CardHeader
+            title="Rate an Appointment"
+            className="modal-head"
+          ></CardHeader>
+          <CardContent style={{ height: "100%" }}>
+            <FormControl>
+              <TextField
+                multiline={true}
+                rows={3}
+                id="comments"
+                label="Comments"
+                type="text"
+                comments={this.state.comments}
+                onChange={this.commentsChangeHandler}
+                variant="standard"
               />
-            </div>
-            <FormHelperText className={this.state.isValidRating}>
-              <div className="red">Submit a rating</div>
-            </FormHelperText>
-            <FormHelperText className={this.state.isAlreadyRated}>
-              <div className="red">
-                You have already rated for this appointment
+            </FormControl>
+            <br />
+            <br />
+            <FormControl required>
+              <div>
+                Rating:
+                <Rating
+                  name="simple-controlled"
+                  value={this.state.ratingValue}
+                  onChange={this.ratingChangeHandler}
+                />
               </div>
-            </FormHelperText>
-            <FormHelperText className={this.state.ratedSuccessfully}>
-              <div className="red">Rated Successfully</div>
-            </FormHelperText>
-          </FormControl>
-          <br />
-          <br />
-          <Button
-            style={{
-              backgroundColor: "blue",
-              color: "white",
-              width: "15vw",
-            }}
-            variant="contained"
-            onClick={this.rateAppointmentClickHandler}
-          >
-            RATE APPOINTMENT
-          </Button>
-        </div>
+              <FormHelperText className={this.state.isValidRating}>
+                <div className="red">Submit a rating</div>
+              </FormHelperText>
+              <FormHelperText className={this.state.isAlreadyRated}>
+                <div className="red">
+                  You have already rated for this appointment
+                </div>
+              </FormHelperText>
+              {/* <FormHelperText className={this.state.ratedSuccessfully}>
+                <div className="red">Rated Successfully</div>
+              </FormHelperText> */}
+            </FormControl>
+            <br />
+            <br />
+            <FormControl>
+              <div className={this.state.ratedSuccessfully}>
+                Rated Successfully
+              </div>
+            </FormControl>
+            <br />
+            <Button
+              style={{
+                backgroundColor: "blue",
+                color: "white",
+                width: "15vw",
+              }}
+              variant="contained"
+              onClick={this.rateAppointmentClickHandler}
+            >
+              RATE APPOINTMENT
+            </Button>
+            {/* </div> */}
+          </CardContent>
+        </Card>
       </Modal>
     );
   }

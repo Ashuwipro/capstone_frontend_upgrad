@@ -5,16 +5,17 @@ import DoctorList from "../../screens/doctorList/DoctorList";
 import Appointment from "../../screens/appointment/Appointment";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import TabContainer from "../../common/tabContainer/TabContainer";
+import { fetchAppointmentsForAppointmentTab } from "../../util/fetch";
+import "../../common/common.css";
 
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
+// const TabContainer = function (props) {
+//   return (
+//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
+//       {props.children}
+//     </Typography>
+//   );
+// };
 
 //creating Home component
 class Home extends Component {
@@ -31,6 +32,13 @@ class Home extends Component {
     };
   }
 
+  async componentDidMount() {
+    if (this.state.loggedIn) {
+      const data = await fetchAppointmentsForAppointmentTab();
+      this.setState({ appointmentList: data });
+    }
+  }
+
   loggedInStateChange = () => {
     this.setState(
       {
@@ -40,30 +48,19 @@ class Home extends Component {
             ? false
             : true,
       },
-      () => {
+      async () => {
         if (this.state.loggedIn) {
-          const opt = {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("access-token"),
-              "Content-Type": "application/json",
-            },
-          };
-          fetch(
-            `http://localhost:8080/users/${localStorage.getItem(
-              "uuid"
-            )}/appointments`,
-            opt
-          )
-            .then((response) => response.json())
-            .then((data) => this.setState({ appointmentList: data }));
+          const data = await fetchAppointmentsForAppointmentTab();
+          this.setState({ appointmentList: data });
         }
       }
     );
   };
 
-  tabChangeHandler = (event, value) => {
+  tabChangeHandler = async (event, value) => {
     this.setState({ value });
+    const data = await fetchAppointmentsForAppointmentTab();
+    this.setState({ appointmentList: data });
   };
 
   render() {

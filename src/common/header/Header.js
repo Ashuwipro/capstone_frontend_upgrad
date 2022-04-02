@@ -5,11 +5,10 @@ import logo from "../../assets/logo.jpeg";
 import Modal from "react-modal";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Typography from "@material-ui/core/Typography";
-import PropTypes from "prop-types";
 
 import Login from "../../screens/login/Login";
 import Register from "../../screens/register/Register";
+import { fetchUsedInHeaderForLogout } from "../../util/fetch";
 
 //creating custom styles
 const customStyles = {
@@ -24,31 +23,31 @@ const customStyles = {
   },
 };
 
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
+// const TabContainer = function (props) {
+//   return (
+//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
+//       {props.children}
+//     </Typography>
+//   );
+// };
 
-const validateUsername = (email) => {
-  return String(email)
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-};
+// const validateUsername = (email) => {
+//   return String(email)
+//     .toLowerCase()
+//     .match(
+//       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+//     );
+// };
 
-const validatePhoneNumber = (phone) => {
-  return String(phone).match(
-    /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
-  );
-};
+// const validatePhoneNumber = (phone) => {
+//   return String(phone).match(
+//     /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+//   );
+// };
 
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+// TabContainer.propTypes = {
+//   children: PropTypes.node.isRequired,
+// };
 
 //creating Header component
 class Header extends Component {
@@ -140,14 +139,17 @@ class Header extends Component {
   };
 
   logoutHandler = (e) => {
-    const options = {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("access-token"),
-      },
-    };
+    // const options = {
+    //   method: "POST",
+    //   headers: {
+    //     Authorization: "Bearer " + localStorage.getItem("access-token"),
+    //   },
+    // };
 
-    fetch("http://localhost:8080/auth/logout", options);
+    // fetch("http://localhost:8080/auth/logout", options);
+
+    fetchUsedInHeaderForLogout();
+
     localStorage.removeItem("uuid");
     localStorage.removeItem("access-token");
 

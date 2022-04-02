@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
 import Modal from "react-modal";
-import FormControl from "@material-ui/core/FormControl";
-import Button from "@material-ui/core/Button";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import TextField from "@mui/material/TextField";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import TabContainer from "../../common/tabContainer/TabContainer";
+import Rating from "@material-ui/lab/Rating";
 
 //creating custom styles
 const customStyles = {
@@ -16,42 +14,74 @@ const customStyles = {
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
-    width: "300px",
-    height: "300px",
+    width: "350px",
+    height: "350px",
     padding: "0%",
     transform: "translate(-50%, -50%)",
+    overflowY: "hidden",
   },
-};
-
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
 };
 
 class DoctorDetails extends Component {
   render() {
     return (
-      <Modal
-        ariaHideApp={false}
-        isOpen={this.props.isOpen}
-        contentLabel="Login"
-        onRequestClose={this.props.handleClose}
-        style={customStyles}
-      >
-        <div className="modal-head">Doctor Details</div>
-        <div style={{ marginLeft: "10px" }}>
-          <FormControl>
-            <h3>Doctor Name: {this.props.dName}</h3>
-            <TextField value="ashutosh" disabled={true} type="text" />
-            <p>College: {this.props.dDetails && this.props.dDetails.college}</p>
-          </FormControl>
+      <TabContainer>
+        <Modal
+          ariaHideApp={false}
+          isOpen={this.props.isOpen}
+          contentLabel="Details"
+          onRequestClose={this.props.handleClose}
+          style={customStyles}
+        >
+          <Card style={{ height: "100%" }}>
+            <CardHeader
+              className="modal-head"
+              title="Doctor Details"
+            ></CardHeader>
+            <CardContent style={{ paddingLeft: "10px", height: "100%" }}>
+              {this.props.dDetails && (
+                <div>
+                  Dr: {this.props.dDetails.firstName}{" "}
+                  {this.props.dDetails.lastName}
+                </div>
+              )}
+              {this.props.dDetails && (
+                <div>
+                  Total Experience: {this.props.dDetails.totalYearsOfExp} years
+                </div>
+              )}
+              {this.props.dDetails && (
+                <div>Speciality :{this.props.dDetails.speciality}</div>
+              )}
+              {this.props.dDetails && (
+                <div>Date of Birth :{this.props.dDetails.dob}</div>
+              )}
+
+              {this.props.dDetails && (
+                <div>City: {this.props.dDetails.address.city}</div>
+              )}
+              {this.props.dDetails && (
+                <div>Email: {this.props.dDetails.emailId}</div>
+              )}
+              {this.props.dDetails && (
+                <div>Mobile: {this.props.dDetails.mobile}</div>
+              )}
+              {this.props.dDetails && (
+                <div>
+                  Rating :
+                  <Rating
+                    name="read-only"
+                    value={this.props.dDetails.rating}
+                    readOnly
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
           <br />
           <br />
-        </div>
-      </Modal>
+        </Modal>
+      </TabContainer>
     );
   }
 }

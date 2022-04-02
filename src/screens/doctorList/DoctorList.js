@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
-// import Select from "react-select";
 import Button from "@material-ui/core/Button";
 import Rating from "@material-ui/lab/Rating";
 import Stack from "@mui/material/Stack";
 import BookAppointment from "../../screens/doctorList/BookAppointment";
 import DoctorDetails from "../../screens/doctorList/DoctorDetails";
+import TabContainer from "../../common/tabContainer/TabContainer";
 
 import Paper from "@mui/material/Paper";
 
@@ -19,25 +18,20 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
+import {
+  fetchBookAppointmentModalHandler,
+  DoctorsAndSpeciality,
+  fetchingDoctorsWithSpeciality,
+  DoctorDetailModalHandler,
+} from "../../util/fetch";
 
-const Countries = [
-  { label: "Albania", value: 355 },
-  { label: "Argentina", value: 54 },
-  { label: "Austria", value: 43 },
-  { label: "Cocos Islands", value: 61 },
-  { label: "Kuwait", value: 965 },
-  { label: "Sweden", value: 46 },
-  { label: "Venezuela", value: 58 },
-];
-
-const n = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+// const TabContainer = function (props) {
+//   return (
+//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
+//       {props.children}
+//     </Typography>
+//   );
+// };
 
 class DoctorList extends Component {
   constructor() {
@@ -60,25 +54,35 @@ class DoctorList extends Component {
   }
 
   async componentDidMount() {
-    const url1 = "http://localhost:8080/doctors/";
-    const url2 = "http://localhost:8080/doctors/speciality";
-    const response1 = await fetch(url1);
-    const response2 = await fetch(url2);
-    const data1 = await response1.json();
-    const data2 = await response2.json();
-    this.setState({ doctorList: data1, speciality: data2 });
+    // const url1 = "http://localhost:8080/doctors/";
+    // const url2 = "http://localhost:8080/doctors/speciality";
+    // const response1 = await fetch(url1);
+    // const response2 = await fetch(url2);
+    // const data1 = await response1.json();
+    // const data2 = await response2.json();
+    // this.setState({ doctorList: data1, speciality: data2 });
+
+    const data = await DoctorsAndSpeciality();
+    this.setState({ doctorList: data[0], speciality: data[1] });
   }
 
-  async fetchingDoctorsWithSpeciality(urlPassed) {
-    const response3 = await fetch(urlPassed);
-    const data3 = await response3.json();
-    this.setState({ doctorList: data3 });
-  }
+  // async fetchingDoctorsWithSpeciality(urlPassed) {
+  //   const response3 = await fetch(urlPassed);
+  //   const data3 = await response3.json();
+  //   this.setState({ doctorList: data3 });
+  // }
 
   handleChange = (event) => {
-    this.setState({ selectedSpeciality: event.target.value }, () => {
-      const url3 = `http://localhost:8080/doctors/?speciality=${this.state.selectedSpeciality}`;
-      this.fetchingDoctorsWithSpeciality(url3);
+    // this.setState({ selectedSpeciality: event.target.value }, () => {
+    //   const url3 = `http://localhost:8080/doctors/?speciality=${this.state.selectedSpeciality}`;
+    //   this.fetchingDoctorsWithSpeciality(url3);
+    // });
+
+    this.setState({ selectedSpeciality: event.target.value }, async () => {
+      const data = await fetchingDoctorsWithSpeciality(
+        this.state.selectedSpeciality
+      );
+      this.setState({ doctorList: data });
     });
   };
 
@@ -99,15 +103,21 @@ class DoctorList extends Component {
           doctorName: data1,
           doctorId: data2,
         },
-        () => {
+        async () => {
           var date = new Date().toISOString().slice(0, 10);
-          fetch(
-            `http://localhost:8080/doctors/${this.state.doctorId}/timeSlots?date=${date}`
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              this.setState({ timeSlot: data.timeSlot });
-            });
+          // fetch(
+          //   `http://localhost:8080/doctors/${this.state.doctorId}/timeSlots?date=${date}`
+          // )
+          //   .then((response) => response.json())
+          //   .then((data) => {
+          //     this.setState({ timeSlot: data.timeSlot });
+          //   });
+
+          let data = await fetchBookAppointmentModalHandler(
+            this.state.doctorId,
+            date
+          );
+          this.setState({ timeSlot: data.timeSlot });
         }
       );
     } else {
@@ -128,13 +138,16 @@ class DoctorList extends Component {
         doctorName: data1,
         doctorId: data2,
       },
-      () => {
-        fetch(`http://localhost:8080/doctors/${this.state.doctorId}`)
-          .then((response) => response.json())
-          .then((data) => {
-            this.setState({ doctorDetails: data });
-            // console.log("Doctor Details=", data);
-          });
+      async () => {
+        // fetch(`http://localhost:8080/doctors/${this.state.doctorId}`)
+        //   .then((response) => response.json())
+        //   .then((data) => {
+        //     this.setState({ doctorDetails: data });
+        //     // console.log("Doctor Details=", data);
+        //   });
+
+        let data = await DoctorDetailModalHandler(this.state.doctorId);
+        this.setState({ doctorDetails: data });
       }
     );
   };
@@ -166,12 +179,16 @@ class DoctorList extends Component {
                   onChange={this.handleChange}
                   style={{ width: "300px" }}
                 >
-                  <MenuItem value="none">
+                  <MenuItem value="none" key="none">
                     <em style={{ opacity: "0" }}>None</em>
                   </MenuItem>
                   {this.state.speciality &&
                     this.state.speciality.map((i) => {
-                      return <MenuItem value={i}>{i}</MenuItem>;
+                      return (
+                        <MenuItem value={i} key={i}>
+                          {i}
+                        </MenuItem>
+                      );
                     })}
                 </Select>
               </FormControl>
@@ -197,9 +214,9 @@ class DoctorList extends Component {
                               paddingTop: "1px",
                             }}
                           >
-                            <h3 style={{ marginTop: "10px" }}>
-                              Doctor Name : {i.firstName}
-                            </h3>
+                            <p style={{ marginTop: "10px" }}>
+                              Doctor Name : {i.firstName} {i.lastName}
+                            </p>
 
                             <div>Speciality : {i.speciality}</div>
                             <div>
@@ -229,7 +246,7 @@ class DoctorList extends Component {
                               variant="contained"
                               onClick={() =>
                                 this.openBookAppointmentModalHandler(
-                                  i.firstName,
+                                  i.firstName + " " + i.lastName,
                                   i.id
                                 )
                               }
@@ -244,7 +261,10 @@ class DoctorList extends Component {
                               }}
                               variant="contained"
                               onClick={() =>
-                                this.openDoctorDetailModalHandler(i.firstName)
+                                this.openDoctorDetailModalHandler(
+                                  i.firstName + " " + i.lastName,
+                                  i.id
+                                )
                               }
                             >
                               VIEW DETAILS
@@ -268,7 +288,12 @@ class DoctorList extends Component {
                       <div className="col-md-4" style={{ marginTop: "10px" }}>
                         <Paper
                           elevation={3}
-                          style={{ width: "40%", margin: "auto" }}
+                          style={{
+                            width: "40%",
+                            margin: "auto",
+                            padding: "20px",
+                            cursor: "pointer",
+                          }}
                         >
                           <div
                             style={{
@@ -277,9 +302,9 @@ class DoctorList extends Component {
                               paddingTop: "1px",
                             }}
                           >
-                            <h3 style={{ marginTop: "10px" }}>
-                              Doctor Name : {i.firstName}
-                            </h3>
+                            <p style={{ marginTop: "10px" }}>
+                              Doctor Name : {i.firstName} {i.lastName}
+                            </p>
 
                             <div>Speciality : {i.speciality}</div>
                             <div>
@@ -309,7 +334,7 @@ class DoctorList extends Component {
                               variant="contained"
                               onClick={() =>
                                 this.openBookAppointmentModalHandler(
-                                  i.firstName,
+                                  i.firstName + " " + i.lastName,
                                   i.id
                                 )
                               }
@@ -325,7 +350,7 @@ class DoctorList extends Component {
                               variant="contained"
                               onClick={() =>
                                 this.openDoctorDetailModalHandler(
-                                  i.firstName,
+                                  i.firstName + " " + i.lastName,
                                   i.id
                                 )
                               }
