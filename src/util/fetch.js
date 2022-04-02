@@ -156,7 +156,8 @@ async function rateAppointment(data) {
   };
 
   const response = await fetch(baseUrl + "ratings", options);
-  return response;
+  const status = response.status;
+  return status;
 }
 
 export {

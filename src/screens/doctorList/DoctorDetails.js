@@ -38,7 +38,7 @@ class DoctorDetails extends Component {
               className="modal-head"
               title="Doctor Details"
             ></CardHeader>
-            <CardContent style={{ paddingLeft: "10px", height: "100%" }}>
+            <CardContent style={{ height: "100%" }}>
               {this.props.dDetails && (
                 <div>
                   Dr: {this.props.dDetails.firstName}{" "}

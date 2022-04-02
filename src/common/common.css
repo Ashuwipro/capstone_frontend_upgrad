@@ -36,17 +36,6 @@
   padding: 11px;
 }
 
-.bookshow-button {
-  float: right;
-  margin-right: 8px;
-}
-
-@keyframes app-logo-spin {
-  from {
-    transform: scaleX(-1);
-  }
-}
-
 .tabs {
   margin-bottom: 20px;
   padding-left: 20px;
@@ -76,7 +65,3 @@
 .red {
   color: red;
 }
-
-/* input:placeholder-shown {
-  font-size: 10px;
-} */

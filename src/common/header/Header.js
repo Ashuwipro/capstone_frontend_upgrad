@@ -34,28 +34,6 @@ class Header extends Component {
     this.state = {
       modalIsOpen: false,
       value: 0,
-      // isSuccessLogin: "dispNone",
-      // isSuccessRegister: "dispNone",
-      // isFailedLogin: "dispNone",
-      // isFailedRegister: "dispNone",
-      // usernameRequired: "dispNone",
-      // usernameValid: "dispNone",
-      // username: "",
-      // loginPasswordRequired: "dispNone",
-      // loginPassword: "",
-      // firstnameRequired: "dispNone",
-      // firstname: "",
-      // lastnameRequired: "dispNone",
-      // lastname: "",
-      // emailRequired: "dispNone",
-      // emailValid: "dispNone",
-      // email: "",
-      // registerPasswordRequired: "dispNone",
-      // registerPassword: "",
-      // contactRequired: "dispNone",
-      // contactValid: "dispNone",
-      // contact: "",
-      // registrationSuccess: false,
       loggedIn:
         sessionStorage.getItem("access-token") === null ||
         sessionStorage.getItem("access-token") === undefined
@@ -70,27 +48,6 @@ class Header extends Component {
     this.setState({
       modalIsOpen: true,
       value: 0,
-      // isSuccessLogin: "dispNone",
-      // isSuccessRegister: "dispNone",
-      // isFailedLogin: "dispNone",
-      // isFailedRegister: "dispNone",
-      // usernameRequired: "dispNone",
-      // usernameValid: "dispNone",
-      // username: "",
-      // loginPasswordRequired: "dispNone",
-      // loginPassword: "",
-      // firstnameRequired: "dispNone",
-      // firstname: "",
-      // lastnameRequired: "dispNone",
-      // lastname: "",
-      // emailRequired: "dispNone",
-      // emailValid: "dispNone",
-      // email: "",
-      // registerPasswordRequired: "dispNone",
-      // registerPassword: "",
-      // contactRequired: "dispNone",
-      // contactValid: "dispNone",
-      // contact: "",
     });
   };
 
@@ -108,12 +65,6 @@ class Header extends Component {
 
   tabChangeHandler = (event, value) => {
     this.setState({ value });
-    this.setState({
-      isSuccessLogin: "dispNone",
-      isSuccessRegister: "dispNone",
-      isFailedLogin: "dispNone",
-      isFailedRegister: "dispNone",
-    });
   };
 
   logoutHandler = (e) => {

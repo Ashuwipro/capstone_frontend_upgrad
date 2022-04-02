@@ -40,9 +40,6 @@ class DoctorList extends Component {
       doctorDetails: null,
       withoutLoginAppointment: false,
     };
-    // this.closeBookAppointmentModalHandler =
-    //   this.closeBookAppointmentModalHandler.bind(this);
-    // this.handleChange = this.handleChange.bind(this);
   }
 
   async componentDidMount() {
@@ -164,7 +161,12 @@ class DoctorList extends Component {
                       <div className="col-md-4" style={{ marginTop: "10px" }}>
                         <Paper
                           elevation={3}
-                          style={{ width: "40%", margin: "auto" }}
+                          style={{
+                            width: "40%",
+                            margin: "auto",
+                            padding: "20px",
+                            cursor: "pointer",
+                          }}
                         >
                           <div
                             style={{

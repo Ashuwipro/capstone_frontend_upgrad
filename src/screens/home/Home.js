@@ -7,7 +7,6 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import TabContainer from "../../common/tabContainer/TabContainer";
 import { fetchAppointmentsForAppointmentTab } from "../../util/fetch";
-import "../../common/common.css";
 
 //creating Home component
 class Home extends Component {

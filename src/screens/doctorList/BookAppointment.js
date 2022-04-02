@@ -22,6 +22,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
+import browser1 from "../../assets/browser1.png";
 
 import {
   fetchHandleDateChangeFetchingTimeSlots,
@@ -29,8 +30,6 @@ import {
   fetchBookingAppointmenWithDetails,
 } from "../../util/fetch";
 import TabContainer from "../../common/tabContainer/TabContainer";
-
-import "../../common/common.css";
 
 //creating custom styles
 const customStyles = {
@@ -98,14 +97,11 @@ class BookAppointment extends Component {
         timeSlot: this.state.selectedTimeSlot,
         appointmentDate: this.state.selectedDate,
         symptoms: this.state.symptoms,
-        priormedicalhistory: this.state.priormedicalhistory,
+        priorMedicalHistory: this.state.priormedicalhistory,
       };
-
-      console.log("Booking data=", options);
 
       const responsesse = await fetchBookingAppointmenWithDetails(options);
 
-      console.log("responsesse = ", responsesse);
       if (responsesse >= 400) {
         this.setState({
           openSlotUnavailable: true,
@@ -155,7 +151,6 @@ class BookAppointment extends Component {
         this.props.dId,
         date
       );
-      console.log("asaf = ", this.props);
       this.setState({ timeSlot: response.timeSlot });
     });
   };
@@ -294,8 +289,23 @@ class BookAppointment extends Component {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
               >
-                <DialogTitle id="alert-dialog-title">
-                  {"localhost:3000"}
+                <DialogTitle
+                  id="alert-dialog-title"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    src={browser1}
+                    alt="Browser Logo"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                    }}
+                  />
+                  <span>localhost:3000</span>
                 </DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">
@@ -305,7 +315,7 @@ class BookAppointment extends Component {
                 <DialogActions>
                   <Button
                     style={{
-                      backgroundColor: "lightblue",
+                      backgroundColor: "blue",
                       color: "white",
                       width: "5vw",
                     }}
