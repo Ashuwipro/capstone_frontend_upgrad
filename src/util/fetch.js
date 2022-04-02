@@ -1,6 +1,8 @@
+const baseUrl = "http://localhost:8080/";
+
 async function DoctorsAndSpeciality() {
-  const url1 = "http://localhost:8080/doctors/";
-  const url2 = "http://localhost:8080/doctors/speciality";
+  const url1 = baseUrl + "doctors/";
+  const url2 = baseUrl + "doctors/speciality";
   const response1 = await fetch(url1);
   const response2 = await fetch(url2);
   const data1 = await response1.json();
@@ -9,9 +11,9 @@ async function DoctorsAndSpeciality() {
 }
 
 async function fetchingDoctorsWithSpeciality(test) {
-  let url3 = "http://localhost:8080/doctors/?speciality=" + test;
+  let url3 = baseUrl + "doctors/?speciality=" + test;
   if (test === "none") {
-    url3 = "http://localhost:8080/doctors/?speciality=";
+    url3 = baseUrl + "doctors/?speciality=";
   }
   const response3 = await fetch(url3);
   const data3 = await response3.json();
@@ -19,38 +21,36 @@ async function fetchingDoctorsWithSpeciality(test) {
 }
 
 async function DoctorDetailModalHandler(doctorId) {
-  let url = `http://localhost:8080/doctors/` + doctorId;
+  let url = baseUrl + "doctors/" + doctorId;
   const response = await fetch(url);
   const data = await response.json();
   return data;
 }
 
 async function fetchBookAppointmentModalHandler(doctorId, date) {
-  let url =
-    "http://localhost:8080/doctors/" + doctorId + "/timeSlots?date=" + date;
+  let url = baseUrl + "doctors/" + doctorId + "/timeSlots?date=" + date;
 
   const response = await fetch(url);
   const data = await response.json();
 
-  //   this.setState({ timeSlot: data.timeSlot });
   return data;
 }
 
-async function fetchBookAppointmentClickHandler(params) {
+async function fetchBookAppointmentClickHandler() {
   const opt = {
     method: "GET",
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("access-token"),
+      Authorization: "Bearer " + sessionStorage.getItem("access-token"),
     },
   };
 
   const response = await fetch(
-    `http://localhost:8080/users/${localStorage.getItem("uuid")}`,
+    `${baseUrl}users/${sessionStorage.getItem("uuid")}`,
     opt
   );
   const data = await response.json();
   const name = (await data.firstName) + " " + data.lastName;
-  console.log("data in =", data);
+
   return name;
 }
 
@@ -58,23 +58,19 @@ async function fetchBookingAppointmenWithDetails(options) {
   const bookAppointment = {
     method: "POST",
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("access-token"),
+      Authorization: "Bearer " + sessionStorage.getItem("access-token"),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(options),
   };
 
-  const response = await fetch(
-    "http://localhost:8080/appointments/",
-    bookAppointment
-  );
+  const response = await fetch(baseUrl + "appointments/", bookAppointment);
   const status = await response.status;
   return status;
 }
 
 async function fetchHandleDateChangeFetchingTimeSlots(dId, date) {
-  const url =
-    "http://localhost:8080/doctors/" + dId + "/timeSlots?date=" + date;
+  const url = baseUrl + "doctors/" + dId + "/timeSlots?date=" + date;
   const response = await fetch(url);
   const data = await response.json();
   return data;
@@ -84,12 +80,12 @@ async function fetchAppointmentsForAppointmentTab() {
   const opt = {
     method: "GET",
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("access-token"),
+      Authorization: "Bearer " + sessionStorage.getItem("access-token"),
       "Content-Type": "application/json",
     },
   };
   const response = await fetch(
-    `http://localhost:8080/users/${localStorage.getItem("uuid")}/appointments`,
+    `${baseUrl}users/${sessionStorage.getItem("uuid")}/appointments`,
     opt
   );
   const data = await response.json();
@@ -105,7 +101,7 @@ async function fetchUsedInLogin(username, loginPassword) {
     },
   };
 
-  const response = await fetch("http://localhost:8080/auth/login", options);
+  const response = await fetch(baseUrl + "auth/login", options);
   const status = response.status;
   const data = await response.json();
 
@@ -118,10 +114,7 @@ async function fetchUsedInRegister(dataSignup) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dataSignup),
   };
-  const response = await fetch(
-    "http://localhost:8080/users/register",
-    requestOptions
-  );
+  const response = await fetch(baseUrl + "users/register", requestOptions);
   const status = await response.status;
   const data = await response.json();
   return [status, data];
@@ -131,11 +124,39 @@ async function fetchUsedInHeaderForLogout() {
   const options = {
     method: "POST",
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("access-token"),
+      Authorization: "Bearer " + sessionStorage.getItem("access-token"),
     },
   };
 
-  fetch("http://localhost:8080/auth/logout", options);
+  fetch(baseUrl + "auth/logout", options);
+}
+
+async function appointmentRatedOrNot(appointmentId) {
+  const options = {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + sessionStorage.getItem("access-token"),
+      "Content-Type": "application/json",
+    },
+  };
+
+  const response = await fetch(baseUrl + "ratings/" + appointmentId, options);
+  const data = await response.json();
+  return data;
+}
+
+async function rateAppointment(data) {
+  const options = {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + sessionStorage.getItem("access-token"),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  };
+
+  const response = await fetch(baseUrl + "ratings", options);
+  return response;
 }
 
 export {
@@ -150,4 +171,6 @@ export {
   fetchingDoctorsWithSpeciality,
   DoctorsAndSpeciality,
   DoctorDetailModalHandler,
+  appointmentRatedOrNot,
+  rateAppointment,
 };

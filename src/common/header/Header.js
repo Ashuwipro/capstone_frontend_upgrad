@@ -10,6 +10,10 @@ import Login from "../../screens/login/Login";
 import Register from "../../screens/register/Register";
 import { fetchUsedInHeaderForLogout } from "../../util/fetch";
 
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+
 //creating custom styles
 const customStyles = {
   content: {
@@ -23,32 +27,6 @@ const customStyles = {
   },
 };
 
-// const TabContainer = function (props) {
-//   return (
-//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-//       {props.children}
-//     </Typography>
-//   );
-// };
-
-// const validateUsername = (email) => {
-//   return String(email)
-//     .toLowerCase()
-//     .match(
-//       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-//     );
-// };
-
-// const validatePhoneNumber = (phone) => {
-//   return String(phone).match(
-//     /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
-//   );
-// };
-
-// TabContainer.propTypes = {
-//   children: PropTypes.node.isRequired,
-// };
-
 //creating Header component
 class Header extends Component {
   constructor() {
@@ -56,31 +34,31 @@ class Header extends Component {
     this.state = {
       modalIsOpen: false,
       value: 0,
-      isSuccessLogin: "dispNone",
-      isSuccessRegister: "dispNone",
-      isFailedLogin: "dispNone",
-      isFailedRegister: "dispNone",
-      usernameRequired: "dispNone",
-      usernameValid: "dispNone",
-      username: "",
-      loginPasswordRequired: "dispNone",
-      loginPassword: "",
-      firstnameRequired: "dispNone",
-      firstname: "",
-      lastnameRequired: "dispNone",
-      lastname: "",
-      emailRequired: "dispNone",
-      emailValid: "dispNone",
-      email: "",
-      registerPasswordRequired: "dispNone",
-      registerPassword: "",
-      contactRequired: "dispNone",
-      contactValid: "dispNone",
-      contact: "",
-      registrationSuccess: false,
+      // isSuccessLogin: "dispNone",
+      // isSuccessRegister: "dispNone",
+      // isFailedLogin: "dispNone",
+      // isFailedRegister: "dispNone",
+      // usernameRequired: "dispNone",
+      // usernameValid: "dispNone",
+      // username: "",
+      // loginPasswordRequired: "dispNone",
+      // loginPassword: "",
+      // firstnameRequired: "dispNone",
+      // firstname: "",
+      // lastnameRequired: "dispNone",
+      // lastname: "",
+      // emailRequired: "dispNone",
+      // emailValid: "dispNone",
+      // email: "",
+      // registerPasswordRequired: "dispNone",
+      // registerPassword: "",
+      // contactRequired: "dispNone",
+      // contactValid: "dispNone",
+      // contact: "",
+      // registrationSuccess: false,
       loggedIn:
-        localStorage.getItem("access-token") === null ||
-        localStorage.getItem("access-token") === undefined
+        sessionStorage.getItem("access-token") === null ||
+        sessionStorage.getItem("access-token") === undefined
           ? false
           : true,
     };
@@ -92,27 +70,27 @@ class Header extends Component {
     this.setState({
       modalIsOpen: true,
       value: 0,
-      isSuccessLogin: "dispNone",
-      isSuccessRegister: "dispNone",
-      isFailedLogin: "dispNone",
-      isFailedRegister: "dispNone",
-      usernameRequired: "dispNone",
-      usernameValid: "dispNone",
-      username: "",
-      loginPasswordRequired: "dispNone",
-      loginPassword: "",
-      firstnameRequired: "dispNone",
-      firstname: "",
-      lastnameRequired: "dispNone",
-      lastname: "",
-      emailRequired: "dispNone",
-      emailValid: "dispNone",
-      email: "",
-      registerPasswordRequired: "dispNone",
-      registerPassword: "",
-      contactRequired: "dispNone",
-      contactValid: "dispNone",
-      contact: "",
+      // isSuccessLogin: "dispNone",
+      // isSuccessRegister: "dispNone",
+      // isFailedLogin: "dispNone",
+      // isFailedRegister: "dispNone",
+      // usernameRequired: "dispNone",
+      // usernameValid: "dispNone",
+      // username: "",
+      // loginPasswordRequired: "dispNone",
+      // loginPassword: "",
+      // firstnameRequired: "dispNone",
+      // firstname: "",
+      // lastnameRequired: "dispNone",
+      // lastname: "",
+      // emailRequired: "dispNone",
+      // emailValid: "dispNone",
+      // email: "",
+      // registerPasswordRequired: "dispNone",
+      // registerPassword: "",
+      // contactRequired: "dispNone",
+      // contactValid: "dispNone",
+      // contact: "",
     });
   };
 
@@ -120,8 +98,8 @@ class Header extends Component {
     this.setState({
       modalIsOpen: false,
       loggedIn:
-        localStorage.getItem("access-token") === null ||
-        localStorage.getItem("access-token") === undefined
+        sessionStorage.getItem("access-token") === null ||
+        sessionStorage.getItem("access-token") === undefined
           ? false
           : true,
     });
@@ -139,19 +117,10 @@ class Header extends Component {
   };
 
   logoutHandler = (e) => {
-    // const options = {
-    //   method: "POST",
-    //   headers: {
-    //     Authorization: "Bearer " + localStorage.getItem("access-token"),
-    //   },
-    // };
-
-    // fetch("http://localhost:8080/auth/logout", options);
-
     fetchUsedInHeaderForLogout();
 
-    localStorage.removeItem("uuid");
-    localStorage.removeItem("access-token");
+    sessionStorage.removeItem("uuid");
+    sessionStorage.removeItem("access-token");
 
     this.setState({
       loggedIn: false,
@@ -195,24 +164,33 @@ class Header extends Component {
           onRequestClose={this.closeModalHandler}
           style={customStyles}
         >
-          <div className="modal-head">Authentication</div>
-          <Tabs
-            className="tabs"
-            value={this.state.value}
-            onChange={this.tabChangeHandler}
-          >
-            <Tab label="Login" />
-            <Tab label="Register" />
-          </Tabs>
+          <Card style={{ height: "100%" }}>
+            <CardHeader
+              className="modal-head"
+              title="Authentication"
+            ></CardHeader>
+            <CardContent style={{ height: "100%" }}>
+              <Tabs
+                className="tabs"
+                value={this.state.value}
+                onChange={this.tabChangeHandler}
+              >
+                <Tab label="Login" />
+                <Tab label="Register" />
+              </Tabs>
 
-          {this.state.value === 0 && (
-            <Login
-              baseUrl={this.props.baseUrl}
-              closeModal={this.closeModalHandler}
-            />
-          )}
+              {this.state.value === 0 && (
+                <Login
+                  baseUrl={this.props.baseUrl}
+                  closeModal={this.closeModalHandler}
+                />
+              )}
 
-          {this.state.value === 1 && <Register baseUrl={this.props.baseUrl} />}
+              {this.state.value === 1 && (
+                <Register baseUrl={this.props.baseUrl} />
+              )}
+            </CardContent>
+          </Card>
         </Modal>
       </div>
     );

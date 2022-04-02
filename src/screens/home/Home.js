@@ -9,14 +9,6 @@ import TabContainer from "../../common/tabContainer/TabContainer";
 import { fetchAppointmentsForAppointmentTab } from "../../util/fetch";
 import "../../common/common.css";
 
-// const TabContainer = function (props) {
-//   return (
-//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-//       {props.children}
-//     </Typography>
-//   );
-// };
-
 //creating Home component
 class Home extends Component {
   constructor() {
@@ -24,8 +16,8 @@ class Home extends Component {
     this.state = {
       value: 0,
       loggedIn:
-        localStorage.getItem("access-token") === null ||
-        localStorage.getItem("access-token") === undefined
+        sessionStorage.getItem("access-token") === null ||
+        sessionStorage.getItem("access-token") === undefined
           ? false
           : true,
       appointmentList: null,
@@ -43,8 +35,8 @@ class Home extends Component {
     this.setState(
       {
         loggedIn:
-          localStorage.getItem("access-token") === null ||
-          localStorage.getItem("access-token") === undefined
+          sessionStorage.getItem("access-token") === null ||
+          sessionStorage.getItem("access-token") === undefined
             ? false
             : true,
       },

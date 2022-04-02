@@ -23,8 +23,6 @@ import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 
-import { alpha } from "@material-ui/core/styles";
-
 import {
   fetchHandleDateChangeFetchingTimeSlots,
   fetchBookAppointmentClickHandler,
@@ -80,83 +78,6 @@ class BookAppointment extends Component {
     });
   };
 
-  // bookAppointmentClickHandler = async () => {
-  //   this.state.selectedTimeSlot === "" || this.state.selectedTimeSlot === "none"
-  //     ? this.setState({ isValidTimeSlot: "dispBlock" })
-  //     : this.setState({ isValidTimeSlot: "dispNone" });
-
-  //   if (
-  //     this.state.selectedTimeSlot !== "" &&
-  //     this.state.selectedTimeSlot !== "none"
-  //   ) {
-  //     // const opt = {
-  //     //   method: "GET",
-  //     //   headers: {
-  //     //     Authorization: "Bearer " + localStorage.getItem("access-token"),
-  //     //   },
-  //     // };
-
-  //     const result = await fetchBookAppointmentClickHandler();
-
-  //     // fetch(`http://localhost:8080/users/${localStorage.getItem("uuid")}`, opt)
-  //     //   .then((response) => response.json())
-  //     //   .then((data) => {
-  //     const options = {
-  //       doctorId: this.props.dId,
-  //       doctorName: this.props.dName,
-  //       userId: localStorage.getItem("uuid"),
-  //       // userName: data.firstName + " " + data.lastName,
-  //       userName: result,
-  //       userEmailId: localStorage.getItem("uuid"),
-  //       timeSlot: this.state.selectedTimeSlot,
-  //       appointmentDate: this.state.selectedDate,
-  //       symptoms: this.state.symptoms,
-  //       priormedicalhistory: this.state.priormedicalhistory,
-  //     };
-
-  //     console.log("Booking data=", options);
-
-  //     // const bookAppointment = {
-  //     //   method: "POST",
-  //     //   headers: {
-  //     //     Authorization: "Bearer " + localStorage.getItem("access-token"),
-  //     //     "Content-Type": "application/json",
-  //     //   },
-  //     //   body: JSON.stringify(options),
-  //     // };
-
-  //     const responsesse = await fetchBookingAppointmenWithDetails(options);
-
-  //     console.log("responsesse = ", responsesse);
-  //     if (responsesse >= 400) {
-  //       this.setState({
-  //         openSlotUnavailable: true,
-  //         bookedAppointment: "dispNone",
-  //       });
-  //     } else {
-  //       this.setState({
-  //         bookedAppointment: "dispBlock",
-  //       });
-  //     }
-
-  //     // fetch("http://localhost:8080/appointments/", bookAppointment).then(
-  //     //   (response) => {
-  //     //     if (response.status === 400) {
-  //     //       this.setState({
-  //     //         openSlotUnavailable: true,
-  //     //         bookedAppointment: "dispNone",
-  //     //       });
-  //     //     } else {
-  //     //       this.setState({
-  //     //         bookedAppointment: "dispBlock",
-  //     //       });
-  //     //     }
-  //     //   }
-  //     // );
-  //     // });
-  //   }
-  // };
-
   bookAppointmentClickHandler = async () => {
     this.state.selectedTimeSlot === "" || this.state.selectedTimeSlot === "none"
       ? this.setState({ isValidTimeSlot: "dispBlock" })
@@ -166,25 +87,14 @@ class BookAppointment extends Component {
       this.state.selectedTimeSlot !== "" &&
       this.state.selectedTimeSlot !== "none"
     ) {
-      // const opt = {
-      //   method: "GET",
-      //   headers: {
-      //     Authorization: "Bearer " + localStorage.getItem("access-token"),
-      //   },
-      // };
-
       const result = await fetchBookAppointmentClickHandler();
 
-      // fetch(`http://localhost:8080/users/${localStorage.getItem("uuid")}`, opt)
-      //   .then((response) => response.json())
-      //   .then((data) => {
       const options = {
         doctorId: this.props.dId,
         doctorName: this.props.dName,
-        userId: localStorage.getItem("uuid"),
-        // userName: data.firstName + " " + data.lastName,
+        userId: sessionStorage.getItem("uuid"),
         userName: result,
-        userEmailId: localStorage.getItem("uuid"),
+        userEmailId: sessionStorage.getItem("uuid"),
         timeSlot: this.state.selectedTimeSlot,
         appointmentDate: this.state.selectedDate,
         symptoms: this.state.symptoms,
@@ -192,15 +102,6 @@ class BookAppointment extends Component {
       };
 
       console.log("Booking data=", options);
-
-      // const bookAppointment = {
-      //   method: "POST",
-      //   headers: {
-      //     Authorization: "Bearer " + localStorage.getItem("access-token"),
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(options),
-      // };
 
       const responsesse = await fetchBookingAppointmenWithDetails(options);
 
@@ -215,24 +116,6 @@ class BookAppointment extends Component {
           bookedAppointment: "dispBlock",
         });
       }
-
-      // fetch("http://localhost:8080/appointments/", bookAppointment).then(
-      //   (response) => {
-      //     if (response.status >= 400) {
-      //       this.setState({
-      //         openSlotUnavailable: true,
-      //         bookedAppointment: "dispNone",
-      //       });
-      //     } else {
-      //       this.setState({
-      //         bookedAppointment: "dispBlock",
-      //       });
-      //     }
-      //   }
-      // );
-
-      // }
-      // );
     }
   };
 
@@ -292,7 +175,6 @@ class BookAppointment extends Component {
               className="modal-head"
               title="Book an Appointment"
             ></CardHeader>
-            {/* <div style={{ marginLeft: "10px" }}> */}
             <CardContent style={{ height: "100%" }}>
               <FormControl>
                 <TextField
@@ -386,9 +268,6 @@ class BookAppointment extends Component {
                   onChange={this.symptomsChangeHandler}
                   variant="standard"
                 />
-                {/* <FormHelperText className={this.state.bookedAppointment}>
-                <div className="red">Appointment Booked Successfully</div>
-              </FormHelperText> */}
               </FormControl>
               <br />
               <br />
@@ -412,7 +291,6 @@ class BookAppointment extends Component {
               </Button>
               <Dialog
                 open={this.state.openSlotUnavailable}
-                // onClose={this.handleSlotUnavailableClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
               >
@@ -439,7 +317,6 @@ class BookAppointment extends Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              {/* </div> */}
             </CardContent>
           </Card>
         </Modal>

@@ -6,16 +6,6 @@ import RateAppointment from "../appointment/RateAppointment";
 import Paper from "@mui/material/Paper";
 import TabContainer from "../../common/tabContainer/TabContainer";
 
-// const TabContainer = function (props) {
-//   return (
-//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-//       {props.children}
-//     </Typography>
-//   );
-// };
-
-// const n = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
 class Appointment extends Component {
   constructor() {
     super();
@@ -67,9 +57,6 @@ class Appointment extends Component {
                       <div>Date: {i.appointmentDate}</div>
                       <div>Symptoms : {i.symptoms}</div>
                       <div>Prior Medical History : {i.priorMedicalHistory}</div>
-                      {/* <div>
-                        Rating : <Rating name="read-only" value="5" readOnly />
-                      </div> */}
                     </div>
                     <Stack
                       spacing={2}

@@ -7,58 +7,21 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import { fetchUsedInLogin } from "../../util/fetch";
 import TabContainer from "../../common/tabContainer/TabContainer";
 
-// const TabContainer = function (props) {
-//   return (
-//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-//       {props.children}
-//     </Typography>
-//   );
-// };
-
-// const validateUsername = (email) => {
-//   return String(email)
-//     .toLowerCase()
-//     .match(
-//       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-//     );
-// };
-
-// TabContainer.propTypes = {
-//   children: PropTypes.node.isRequired,
-// };
-
 class Login extends Component {
   constructor() {
     super();
     this.state = {
       modalIsOpen: false,
-      // value: 0,
       isSuccessLogin: "dispNone",
-      // isSuccessRegister: "dispNone",
       isFailedLogin: "dispNone",
-      // isFailedRegister: "dispNone",
       usernameRequired: "dispNone",
       usernameValid: "dispNone",
-      // username: "",
-      username: "test",
+      username: "",
       loginPasswordRequired: "dispNone",
       loginPassword: "",
-      // firstnameRequired: "dispNone",
-      // firstname: "",
-      // lastnameRequired: "dispNone",
-      // lastname: "",
-      // emailRequired: "dispNone",
-      // emailValid: "dispNone",
-      // email: "",
-      // registerPasswordRequired: "dispNone",
-      // registerPassword: "",
-      // contactRequired: "dispNone",
-      // contactValid: "dispNone",
-      // contact: "",
-      // registrationSuccess: false,
       loggedIn:
-        localStorage.getItem("access-token") === null ||
-        localStorage.getItem("access-token") === undefined
+        sessionStorage.getItem("access-token") === null ||
+        sessionStorage.getItem("access-token") === undefined
           ? false
           : true,
     };
@@ -99,13 +62,13 @@ class Login extends Component {
         console.log("Data.id=", data[0].id);
         console.log("Data acces token=", data[0].accessToken);
         //set access-token when logged in successfully
-        localStorage.setItem("uuid", data[0].id);
-        localStorage.setItem("access-token", data[0].accessToken);
+        sessionStorage.setItem("uuid", data[0].id);
+        sessionStorage.setItem("access-token", data[0].accessToken);
 
         this.setState({
           loggedIn:
-            localStorage.getItem("access-token") === null ||
-            localStorage.getItem("access-token") === undefined
+            sessionStorage.getItem("access-token") === null ||
+            sessionStorage.getItem("access-token") === undefined
               ? false
               : true,
           isSuccessLogin: "dispBlock",
@@ -117,8 +80,8 @@ class Login extends Component {
       } else {
         this.setState({
           loggedIn:
-            localStorage.getItem("access-token") === null ||
-            localStorage.getItem("access-token") === undefined
+            sessionStorage.getItem("access-token") === null ||
+            sessionStorage.getItem("access-token") === undefined
               ? false
               : true,
           isSuccessLogin: "dispNone",

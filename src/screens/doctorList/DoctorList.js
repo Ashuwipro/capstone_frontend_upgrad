@@ -25,14 +25,6 @@ import {
   DoctorDetailModalHandler,
 } from "../../util/fetch";
 
-// const TabContainer = function (props) {
-//   return (
-//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-//       {props.children}
-//     </Typography>
-//   );
-// };
-
 class DoctorList extends Component {
   constructor() {
     super();
@@ -48,36 +40,17 @@ class DoctorList extends Component {
       doctorDetails: null,
       withoutLoginAppointment: false,
     };
-    this.closeBookAppointmentModalHandler =
-      this.closeBookAppointmentModalHandler.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    // this.closeBookAppointmentModalHandler =
+    //   this.closeBookAppointmentModalHandler.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
   }
 
   async componentDidMount() {
-    // const url1 = "http://localhost:8080/doctors/";
-    // const url2 = "http://localhost:8080/doctors/speciality";
-    // const response1 = await fetch(url1);
-    // const response2 = await fetch(url2);
-    // const data1 = await response1.json();
-    // const data2 = await response2.json();
-    // this.setState({ doctorList: data1, speciality: data2 });
-
     const data = await DoctorsAndSpeciality();
     this.setState({ doctorList: data[0], speciality: data[1] });
   }
 
-  // async fetchingDoctorsWithSpeciality(urlPassed) {
-  //   const response3 = await fetch(urlPassed);
-  //   const data3 = await response3.json();
-  //   this.setState({ doctorList: data3 });
-  // }
-
   handleChange = (event) => {
-    // this.setState({ selectedSpeciality: event.target.value }, () => {
-    //   const url3 = `http://localhost:8080/doctors/?speciality=${this.state.selectedSpeciality}`;
-    //   this.fetchingDoctorsWithSpeciality(url3);
-    // });
-
     this.setState({ selectedSpeciality: event.target.value }, async () => {
       const data = await fetchingDoctorsWithSpeciality(
         this.state.selectedSpeciality
@@ -94,8 +67,8 @@ class DoctorList extends Component {
 
   openBookAppointmentModalHandler = (data1, data2) => {
     if (
-      localStorage.getItem("access-token") !== null &&
-      localStorage.getItem("access-token") !== undefined
+      sessionStorage.getItem("access-token") !== null &&
+      sessionStorage.getItem("access-token") !== undefined
     ) {
       this.setState(
         {
@@ -105,13 +78,6 @@ class DoctorList extends Component {
         },
         async () => {
           var date = new Date().toISOString().slice(0, 10);
-          // fetch(
-          //   `http://localhost:8080/doctors/${this.state.doctorId}/timeSlots?date=${date}`
-          // )
-          //   .then((response) => response.json())
-          //   .then((data) => {
-          //     this.setState({ timeSlot: data.timeSlot });
-          //   });
 
           let data = await fetchBookAppointmentModalHandler(
             this.state.doctorId,
@@ -139,13 +105,6 @@ class DoctorList extends Component {
         doctorId: data2,
       },
       async () => {
-        // fetch(`http://localhost:8080/doctors/${this.state.doctorId}`)
-        //   .then((response) => response.json())
-        //   .then((data) => {
-        //     this.setState({ doctorDetails: data });
-        //     // console.log("Doctor Details=", data);
-        //   });
-
         let data = await DoctorDetailModalHandler(this.state.doctorId);
         this.setState({ doctorDetails: data });
       }
@@ -201,7 +160,7 @@ class DoctorList extends Component {
                 )
                 .map((i) => {
                   return (
-                    <div key={i.doctorId}>
+                    <div key={i.id}>
                       <div className="col-md-4" style={{ marginTop: "10px" }}>
                         <Paper
                           elevation={3}
@@ -284,7 +243,7 @@ class DoctorList extends Component {
                 )
                 .map((i) => {
                   return (
-                    <div key={i.doctorId}>
+                    <div key={i.id}>
                       <div className="col-md-4" style={{ marginTop: "10px" }}>
                         <Paper
                           elevation={3}
@@ -375,7 +334,6 @@ class DoctorList extends Component {
 
           <Dialog
             open={this.state.withoutLoginAppointment}
-            onClose={this.handleWithoutLoginAppointmentClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >

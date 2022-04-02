@@ -7,14 +7,6 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import { fetchUsedInRegister } from "../../util/fetch";
 import TabContainer from "../../common/tabContainer/TabContainer";
 
-// const TabContainer = function (props) {
-//   return (
-//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-//       {props.children}
-//     </Typography>
-//   );
-// };
-
 const validateUsername = (email) => {
   return String(email)
     .toLowerCase()
@@ -28,10 +20,6 @@ const validatePhoneNumber = (phone) => {
     /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
   );
 };
-
-// TabContainer.propTypes = {
-//   children: PropTypes.node.isRequired,
-// };
 
 class Register extends Component {
   constructor() {
@@ -94,29 +82,6 @@ class Register extends Component {
         mobile: this.state.contact,
         password: this.state.registerPassword,
       };
-
-      // const requestOptions = {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(dataSignup),
-      // };
-      // fetch("http://localhost:8080/users/register", requestOptions)
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     if (data !== null) {
-      //       this.setState({
-      //         registrationSuccess: true,
-      //         isSuccessRegister: "dispBlock",
-      //         isFailedRegister: "dispNone",
-      //       });
-      //     } else {
-      //       this.setState({
-      //         registrationSuccess: false,
-      //         isSuccessRegister: "dispNone",
-      //         isFailedRegister: "dispBlock",
-      //       });
-      //     }
-      //   });
 
       const result = await fetchUsedInRegister(dataSignup);
 
@@ -252,7 +217,8 @@ class Register extends Component {
         {this.state.registrationSuccess === false && (
           <FormControl>
             <span className={this.state.isFailedRegister}>
-              Registration Failed!
+              Registration Failed! <br />
+              Account with this emailId already exists.
             </span>
           </FormControl>
         )}

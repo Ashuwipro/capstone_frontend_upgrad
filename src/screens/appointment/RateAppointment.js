@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import Modal from "react-modal";
 import FormControl from "@material-ui/core/FormControl";
 import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@mui/material/TextField";
 import Rating from "@mui/material/Rating";
 
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
+
+import { appointmentRatedOrNot, rateAppointment } from "../../util/fetch";
 
 //creating custom styles
 const customStyles = {
@@ -26,14 +27,6 @@ const customStyles = {
     transform: "translate(-50%, -50%)",
   },
 };
-
-// const TabContainer = function (props) {
-//   return (
-//     <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-//       {props.children}
-//     </Typography>
-//   );
-// };
 
 class RateAppointment extends Component {
   constructor() {
@@ -69,61 +62,97 @@ class RateAppointment extends Component {
     this.props.handleClose();
   };
 
-  rateAppointmentClickHandler = () => {
-    const opt1 = {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("access-token"),
-        "Content-Type": "application/json",
-      },
-    };
+  // rateAppointmentClickHandler = () => {
+  //   const opt1 = {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: "Bearer " + sessionStorage.getItem("access-token"),
+  //       "Content-Type": "application/json",
+  //     },
+  //   };
 
-    fetch(
-      `http://localhost:8080/ratings/${this.props.details.appointmentId}`,
-      opt1
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data) {
-          this.setState({
-            isValidRating: "dispNone",
-            isAlreadyRated: "dispBlock",
-            ratedSuccessfully: "dispNone",
-          });
-        } else {
-          this.state.ratingValue === "" || this.state.ratingValue === 0
-            ? this.setState({
-                isValidRating: "dispBlock",
-              })
-            : this.setState({
-                isValidRating: "dispNone",
-              });
+  //   fetch(
+  //     `http://localhost:8080/ratings/${this.props.details.appointmentId}`,
+  //     opt1
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       if (data) {
+  //         this.setState({
+  //           isValidRating: "dispNone",
+  //           isAlreadyRated: "dispBlock",
+  //           ratedSuccessfully: "dispNone",
+  //         });
+  //       } else {
+  //         this.state.ratingValue === "" || this.state.ratingValue === 0
+  //           ? this.setState({
+  //               isValidRating: "dispBlock",
+  //             })
+  //           : this.setState({
+  //               isValidRating: "dispNone",
+  //             });
 
-          if (this.state.ratingValue !== "" && this.state.ratingValue !== 0) {
-            let data = {
-              appointmentId: this.props.details.appointmentId,
-              comments: this.state.comments,
-              doctorId: this.props.details.doctorId,
-              rating: this.state.ratingValue,
-            };
+  //         if (this.state.ratingValue !== "" && this.state.ratingValue !== 0) {
+  //           let data = {
+  //             appointmentId: this.props.details.appointmentId,
+  //             comments: this.state.comments,
+  //             doctorId: this.props.details.doctorId,
+  //             rating: this.state.ratingValue,
+  //           };
 
-            const opt2 = {
-              method: "POST",
-              headers: {
-                Authorization: "Bearer " + localStorage.getItem("access-token"),
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            };
+  //           const opt2 = {
+  //             method: "POST",
+  //             headers: {
+  //               Authorization: "Bearer " + sessionStorage.getItem("access-token"),
+  //               "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify(data),
+  //           };
 
-            fetch("http://localhost:8080/ratings", opt2).then(
-              this.setState({
-                ratedSuccessfully: "dispBlock",
-              })
-            );
-          }
-        }
+  //           fetch("http://localhost:8080/ratings", opt2).then(
+  //             this.setState({
+  //               ratedSuccessfully: "dispBlock",
+  //             })
+  //           );
+  //         }
+  //       }
+  //     });
+  // };
+
+  rateAppointmentClickHandler = async () => {
+    const data = await appointmentRatedOrNot(this.props.details.appointmentId);
+
+    if (data) {
+      this.setState({
+        isValidRating: "dispNone",
+        isAlreadyRated: "dispBlock",
+        ratedSuccessfully: "dispNone",
       });
+    } else {
+      this.state.ratingValue === "" || this.state.ratingValue === 0
+        ? this.setState({
+            isValidRating: "dispBlock",
+          })
+        : this.setState({
+            isValidRating: "dispNone",
+          });
+
+      if (this.state.ratingValue !== "" && this.state.ratingValue !== 0) {
+        let data = {
+          appointmentId: this.props.details.appointmentId,
+          comments: this.state.comments,
+          doctorId: this.props.details.doctorId,
+          rating: this.state.ratingValue,
+        };
+
+        const response = await rateAppointment(data);
+        if (response) {
+          this.setState({
+            ratedSuccessfully: "dispBlock",
+          });
+        }
+      }
+    }
   };
 
   render() {
@@ -164,17 +193,14 @@ class RateAppointment extends Component {
                   onChange={this.ratingChangeHandler}
                 />
               </div>
-              <FormHelperText className={this.state.isValidRating}>
+              <div className={this.state.isValidRating}>
                 <div className="red">Submit a rating</div>
-              </FormHelperText>
-              <FormHelperText className={this.state.isAlreadyRated}>
+              </div>
+              <div className={this.state.isAlreadyRated}>
                 <div className="red">
                   You have already rated for this appointment
                 </div>
-              </FormHelperText>
-              {/* <FormHelperText className={this.state.ratedSuccessfully}>
-                <div className="red">Rated Successfully</div>
-              </FormHelperText> */}
+              </div>
             </FormControl>
             <br />
             <br />
@@ -195,7 +221,6 @@ class RateAppointment extends Component {
             >
               RATE APPOINTMENT
             </Button>
-            {/* </div> */}
           </CardContent>
         </Card>
       </Modal>
